@@ -27,8 +27,10 @@ library StringConvertor {
         uint256 index = digits - 1;
         temp = value;
         while (temp != 0) {
-            buffer[index--] = bytes1(uint8(48 + (temp % 10)));
-            temp /= 10;
+            unchecked {
+                buffer[index--] = bytes1(uint8(48 + (temp % 10)));
+                temp /= 10;
+            }
         }
         return string(buffer);
     }
@@ -52,8 +54,10 @@ library StringConvertor {
     function trim(bytes memory self, uint256 cutLength) internal pure returns (bytes memory newString) {
         newString = new bytes(self.length - cutLength);
         uint256 index = newString.length;
-        while (index-- > 0) {
-            newString[index] = self[index];
+        unchecked {
+            while (index-- > 0) {
+                newString[index] = self[index];
+            }
         }
     }
 
@@ -66,10 +70,12 @@ library StringConvertor {
         uint256 oriIndex = self.length - 1;
         uint256 newIndex = newString.length - 1;
         for (uint256 i = 0; i < self.length; i++) {
-            if (i >= 6 && i % 3 == 0) {
-                newString[newIndex--] = ",";
+            unchecked {
+                if (i >= 6 && i % 3 == 0) {
+                    newString[newIndex--] = ",";
+                }
+                newString[newIndex--] = self[oriIndex--];
             }
-            newString[newIndex--] = self[oriIndex--];
         }
     }
 }

@@ -15,7 +15,7 @@ abstract contract ERC3525SlotApprovableUpgradeable is ERC3525Upgradeable, IERC35
         uint256 slot_,
         address operator_,
         bool approved_
-    ) external payable virtual override {
+    ) public payable virtual override {
         require(_msgSender() == owner_ || isApprovedForAll(owner_, _msgSender()), "ERC3525SlotApprovable: caller is not owner nor approved for all");
         _setApprovalForSlot(owner_, slot_, operator_, approved_);
     }
@@ -28,7 +28,7 @@ abstract contract ERC3525SlotApprovableUpgradeable is ERC3525Upgradeable, IERC35
         return _slotApprovals[owner_][slot_][operator_];
     }
 
-    function approve(address to_, uint256 tokenId_) external virtual override(IERC721, ERC3525Upgradeable) {
+    function approve(address to_, uint256 tokenId_) public virtual override(IERC721, ERC3525Upgradeable) {
         address owner = ERC3525Upgradeable.ownerOf(tokenId_);
         uint256 slot = ERC3525Upgradeable.slotOf(tokenId_);
         require(to_ != owner, "ERC3525: approval to current owner");
@@ -43,7 +43,7 @@ abstract contract ERC3525SlotApprovableUpgradeable is ERC3525Upgradeable, IERC35
         _approve(to_, tokenId_);
     }
 
-    function approve(uint256 tokenId_, address to_, uint256 value_) external payable virtual override(IERC3525, ERC3525Upgradeable) {
+    function approve(uint256 tokenId_, address to_, uint256 value_) public payable virtual override(IERC3525, ERC3525Upgradeable) {
         address owner = ERC3525Upgradeable.ownerOf(tokenId_);
         uint256 slot = ERC3525Upgradeable.slotOf(tokenId_);
         require(to_ != owner, "ERC3525: approval to current owner");

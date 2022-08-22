@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "./ERC3525Upgradeable.sol";
 
 contract ERC3525MintableUpgradeable is ERC3525Upgradeable {
-    uint32 public nextTokenId = 1;
+    uint32 public nextTokenId;
 
     function initialize(
         string memory name_,
@@ -12,13 +12,14 @@ contract ERC3525MintableUpgradeable is ERC3525Upgradeable {
         uint8 decimals_
     ) public initializer {
         ERC3525Upgradeable.__ERC3525_init(name_, symbol_, decimals_);
+        nextTokenId = 1;
     }
 
     function mint(
         address minter_,
         uint256 slot_,
         uint256 value_
-    ) external {
+    ) public virtual {
         ERC3525Upgradeable._mintValue(minter_, _createTokenId(), slot_, value_);
     }
 

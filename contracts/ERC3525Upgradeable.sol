@@ -11,7 +11,6 @@ import "./openzeppelin/IERC721Metadata.sol";
 import "./openzeppelin/IERC721Receiver.sol";
 import "./utils/base64.sol";
 import "./utils/StringConvertor.sol";
-import "hardhat/console.sol";
 
 abstract contract ERC3525Upgradeable is
     IERC3525Metadata,
@@ -74,18 +73,21 @@ abstract contract ERC3525Upgradeable is
     /**
      * @dev Returns the token collection name.
      */
-    function name() external view virtual override returns (string memory) {
+    function name() public view virtual override returns (string memory) {
         return _name;
     }
 
     /**
      * @dev Returns the token collection symbol.
      */
-    function symbol() external view virtual override returns (string memory) {
+    function symbol() public view virtual override returns (string memory) {
         return _symbol;
     }
 
-    function valueDecimals() external view virtual override returns (uint8) {
+    /**
+     * @dev Returns the number of decimals the token uses for value.
+     */
+    function valueDecimals() public view virtual override returns (uint8) {
         return _decimals;
     }
 
@@ -106,55 +108,50 @@ abstract contract ERC3525Upgradeable is
         return _allTokens[_allTokensIndex[tokenId_]].slot;
     }
 
-    function contractURI() external view virtual override returns (string memory) {
+    function contractURI() public view virtual override returns (string memory) {
         return 
             string(
                 abi.encodePacked(
-                    // solhint-disable-next-line
+                    /* solhint-disable */
                     'data:application/json;base64,',
                     Base64.encode(
                         abi.encodePacked(
-                            // solhint-disable-next-line
                             '{"name":"', 
                             _name,
-                            // solhint-disable-next-line
                             '","symbol":"', 
                             _symbol, 
-                            // solhint-disable-next-line
                             '","description":"',
                             _contractDescription(),
-                            // solhint-disable-next-line
                             '","valueDecimals":"', 
                             uint256(_decimals).toString(),
-                            // solhint-disable-next-line
-                            '","properties":{}',
-                            _contractProperties(),
-                            // solhint-disable-next-line
-                            '}'
+                            '"}'
                         )
                     )
+                    /* solhint-enable */
                 )
             );
     }
 
-    function slotURI(uint256 slot_) external view virtual override returns (string memory) {
+    function slotURI(uint256 slot_) public view virtual override returns (string memory) {
         return
             string(
                 abi.encodePacked(
-                    // solhint-disable-next-line
+                    /* solhint-disable */
                     'data:application/json;base64,',
                     Base64.encode(
                         abi.encodePacked(
-                            // solhint-disable-next-line
-                            '{"description":"',
+                            '{"name":"', 
+                            _slotName(slot_),
+                            '","description":"',
                             _slotDescription(slot_),
-                            // solhint-disable-next-line
+                            '","image":"',
+                            _slotImage(slot_),
                             '","properties":',
                             _slotProperties(slot_),
-                            // solhint-disable-next-line
                             '}'
                         )
                     )
+                    /* solhint-enable */
                 )
             );
     }
@@ -162,39 +159,35 @@ abstract contract ERC3525Upgradeable is
     /**
      * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
      */
-    function tokenURI(uint256 tokenId_) external view virtual override returns (string memory) {
+    function tokenURI(uint256 tokenId_) public view virtual override returns (string memory) {
         return
             string(
                 abi.encodePacked(
                     "data:application/json;base64,",
                     Base64.encode(
                         abi.encodePacked(
-                            // solhint-disable-next-line
+                            /* solhint-disable */
                             '{"name":"',
                             _tokenName(tokenId_),
-                            // solhint-disable-next-line
                             '","description":"',
                             _tokenDescription(tokenId_),
-                            // solhint-disable-next-line
                             '","image":"',
                             _tokenImage(tokenId_),
-                            // solhint-disable-next-line
                             '","balance":"',
                             _allTokens[_allTokensIndex[tokenId_]].balance.toString(),
-                            // solhint-disable-next-line
                             '","slot":"',
                             slotOf(tokenId_).toString(),
-                            // solhint-disable-next-line
                             '","properties":',
                             _tokenProperties(tokenId_),
                             "}"
+                            /* solhint-enable */
                         )
                     )
                 )
             );
     }
 
-    function approve(uint256 tokenId_, address to_, uint256 value_) external payable virtual override {
+    function approve(uint256 tokenId_, address to_, uint256 value_) public payable virtual override {
         address owner = ERC3525Upgradeable.ownerOf(tokenId_);
         require(to_ != owner, "ERC3525: approval to current owner");
 
@@ -214,7 +207,7 @@ abstract contract ERC3525Upgradeable is
         uint256 fromTokenId_,
         address to_,
         uint256 value_
-    ) external payable virtual override returns (uint256) {
+    ) public payable virtual override returns (uint256) {
         _spendAllowance(_msgSender(), fromTokenId_, value_);
 
         uint256 newTokenId = _createTokenId();
@@ -229,7 +222,7 @@ abstract contract ERC3525Upgradeable is
         address to_,
         uint256 value_,
         bytes calldata data_
-    ) external payable virtual override returns (uint256) {
+    ) public payable virtual override returns (uint256) {
         _spendAllowance(_msgSender(), fromTokenId_, value_);
 
         uint256 newTokenId = _createTokenId();
@@ -243,7 +236,7 @@ abstract contract ERC3525Upgradeable is
         uint256 fromTokenId_,
         uint256 toTokenId_,
         uint256 value_
-    ) external payable virtual override {
+    ) public payable virtual override {
         _spendAllowance(_msgSender(), fromTokenId_, value_);
 
         _transfer(fromTokenId_, toTokenId_, value_);
@@ -254,7 +247,7 @@ abstract contract ERC3525Upgradeable is
         uint256 toTokenId_,
         uint256 value_,
         bytes calldata data_
-    ) external payable virtual override {
+    ) public payable virtual override {
         _spendAllowance(_msgSender(), fromTokenId_, value_);
         
         _safeTransfer(fromTokenId_, toTokenId_, value_, data_);
@@ -269,7 +262,7 @@ abstract contract ERC3525Upgradeable is
         address from_,
         address to_,
         uint256 tokenId_
-    ) external virtual override {
+    ) public virtual override {
         require(_isApprovedOrOwner(_msgSender(), tokenId_), "ERC3525: transfer caller is not owner nor approved");
 
         _transfer(from_, to_, tokenId_);
@@ -289,11 +282,11 @@ abstract contract ERC3525Upgradeable is
         address from_,
         address to_,
         uint256 tokenId_
-    ) external virtual override {
+    ) public virtual override {
         safeTransferFrom(from_, to_, tokenId_, "");
     }
 
-    function approve(address to_, uint256 tokenId_) external virtual override {
+    function approve(address to_, uint256 tokenId_) public virtual override {
         address owner = ERC3525Upgradeable.ownerOf(tokenId_);
         require(to_ != owner, "ERC3525: approval to current owner");
 
@@ -311,7 +304,7 @@ abstract contract ERC3525Upgradeable is
         return _allTokens[_allTokensIndex[tokenId_]].approved;
     }
 
-    function setApprovalForAll(address operator_, bool approved_) external virtual override {
+    function setApprovalForAll(address operator_, bool approved_) public virtual override {
         _setApprovalForAll(_msgSender(), operator_, approved_);
     }
 
@@ -323,12 +316,12 @@ abstract contract ERC3525Upgradeable is
         return _allTokens.length;
     }
 
-    function tokenByIndex(uint256 index_) external view virtual override returns (uint256) {
+    function tokenByIndex(uint256 index_) public view virtual override returns (uint256) {
         require(index_ < ERC3525Upgradeable.totalSupply(), "ERC3525: global index out of bounds");
         return _allTokens[index_].id;
     }
 
-    function tokenOfOwnerByIndex(address owner_, uint256 index_) external view virtual override returns (uint256) {
+    function tokenOfOwnerByIndex(address owner_, uint256 index_) public view virtual override returns (uint256) {
         require(index_ < ERC3525Upgradeable.balanceOf(owner_), "ERC3525: owner index out of bounds");
         return _addressData[owner_].ownedTokens[index_];
     }
@@ -646,6 +639,7 @@ abstract contract ERC3525Upgradeable is
         }
     }
 
+    /* solhint-disable */
     function _beforeValueTransfer(
         address from_,
         address to_,
@@ -663,6 +657,7 @@ abstract contract ERC3525Upgradeable is
         uint256 slot_,
         uint256 value_
     ) internal virtual {}
+    /* solhint-enable */
 
     function _createTokenId() internal virtual returns (uint256);
 
@@ -670,8 +665,9 @@ abstract contract ERC3525Upgradeable is
         return "";
     }
 
-    function _contractProperties() internal view virtual returns (string memory) {
-        return "{}";
+    function _slotName(uint256 slot_) internal view virtual returns (string memory) {
+        slot_;
+        return "";
     }
 
     function _slotDescription(uint256 slot_) internal view virtual returns (string memory) {
@@ -679,19 +675,24 @@ abstract contract ERC3525Upgradeable is
         return "";
     }
 
+    function _slotImage(uint256 slot_) internal view virtual returns (bytes memory) {
+        slot_;
+        return "";
+    }
+
     function _slotProperties(uint256 slot_) internal view virtual returns (string memory) {
         slot_;
-        return "{}";
+        return "[]";
     }
 
     function _tokenName(uint256 tokenId_) internal view virtual returns (string memory) {
         // solhint-disable-next-line
-        return string(abi.encodePacked('"', _name, " #", tokenId_.toString(), '"'));
+        return string(abi.encodePacked(_name, " #", tokenId_.toString()));
     }
 
     function _tokenDescription(uint256 tokenId_) internal view virtual returns (string memory) {
         // solhint-disable-next-line
-        return string(abi.encodePacked('" #', tokenId_.toString(), " of ", _name, '"'));
+        return string(abi.encodePacked('#', tokenId_.toString(), " of ", _name));
     }
 
     function _tokenImage(uint256 tokenId_) internal view virtual returns (bytes memory) {
