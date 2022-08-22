@@ -118,10 +118,10 @@ abstract contract ERC3525Upgradeable is
                         abi.encodePacked(
                             '{"name":"', 
                             _name,
-                            '","symbol":"', 
-                            _symbol, 
                             '","description":"',
                             _contractDescription(),
+                            '","image":"',
+                            _contractImage(),
                             '","valueDecimals":"', 
                             uint256(_decimals).toString(),
                             '"}'
@@ -217,21 +217,6 @@ abstract contract ERC3525Upgradeable is
         return newTokenId;
     }
 
-    function safeTransferFrom(
-        uint256 fromTokenId_,
-        address to_,
-        uint256 value_,
-        bytes calldata data_
-    ) public payable virtual override returns (uint256) {
-        _spendAllowance(_msgSender(), fromTokenId_, value_);
-
-        uint256 newTokenId = _createTokenId();
-        _mint(to_, newTokenId, ERC3525Upgradeable.slotOf(fromTokenId_));
-        _safeTransfer(fromTokenId_, newTokenId, value_, data_);
-
-        return newTokenId;
-    }
-
     function transferFrom(
         uint256 fromTokenId_,
         uint256 toTokenId_,
@@ -240,17 +225,6 @@ abstract contract ERC3525Upgradeable is
         _spendAllowance(_msgSender(), fromTokenId_, value_);
 
         _transfer(fromTokenId_, toTokenId_, value_);
-    }
-
-    function safeTransferFrom(
-        uint256 fromTokenId_,
-        uint256 toTokenId_,
-        uint256 value_,
-        bytes calldata data_
-    ) public payable virtual override {
-        _spendAllowance(_msgSender(), fromTokenId_, value_);
-        
-        _safeTransfer(fromTokenId_, toTokenId_, value_, data_);
     }
 
     function balanceOf(address owner_) public view virtual override returns (uint256 balance) {
@@ -578,21 +552,21 @@ abstract contract ERC3525Upgradeable is
         );
     }
 
-    function _checkOnERC3525Received(
-        uint256 fromTokenId_,
-        uint256 toTokenId_,
-        uint256 value_,
+    function _checkOnERC3525Received( 
+        uint256 fromTokenId_, 
+        uint256 toTokenId_, 
+        uint256 value_, 
         bytes memory data_
     ) private returns (bool) {
         address to = ERC3525Upgradeable.ownerOf((toTokenId_));
-        if (to.isContract()) {
-            try IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_) returns (
-                bytes4 retval
-            ) {
-                return retval == IERC721Receiver.onERC721Received.selector;
+        if (to.isContract() && IERC165(to).supportsInterface(type(IERC3525Receiver).interfaceId)) {
+            try
+                IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_)
+            returns (bytes4 retval) {
+                return retval == IERC3525Receiver.onERC3525Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
-                    revert("ERC3525: transfer to non ERC3525Receiver implementer");
+                    revert( "ERC3525: transfer to non ERC3525Receiver implementer");
                 } else {
                     // solhint-disable-next-line
                     assembly {
@@ -662,6 +636,10 @@ abstract contract ERC3525Upgradeable is
     function _createTokenId() internal virtual returns (uint256);
 
     function _contractDescription() internal view virtual returns (string memory) {
+        return "";
+    }
+
+    function _contractImage() internal view virtual returns (bytes memory) {
         return "";
     }
 
