@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "./ERC3525Upgradeable.sol";
 
 contract ERC3525MintableUpgradeable is ERC3525Upgradeable {
-    uint32 public nextTokenId;
 
     function initialize(
         string memory name_,
@@ -12,7 +11,6 @@ contract ERC3525MintableUpgradeable is ERC3525Upgradeable {
         uint8 decimals_
     ) public initializer {
         ERC3525Upgradeable.__ERC3525_init(name_, symbol_, decimals_);
-        nextTokenId = 1;
     }
 
     function mint(
@@ -20,10 +18,12 @@ contract ERC3525MintableUpgradeable is ERC3525Upgradeable {
         uint256 slot_,
         uint256 value_
     ) public virtual {
-        ERC3525Upgradeable._mintValue(minter_, _createTokenId(), slot_, value_);
+        ERC3525Upgradeable._mintValue(minter_, slot_, value_);
     }
 
-    function _createTokenId() internal virtual override returns (uint256) {
-        return nextTokenId++;
-    }
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     * variables without shifting down storage in the inheritance chain.
+     */
+    uint256[50] private __gap;
 }

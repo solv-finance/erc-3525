@@ -115,4 +115,9 @@ abstract contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC35
         slotData.slotTokens.pop();
     }
 
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     * variables without shifting down storage in the inheritance chain.
+     */
+    uint256[47] private __gap;
 }

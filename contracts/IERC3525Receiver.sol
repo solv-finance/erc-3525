@@ -1,16 +1,20 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 /**
- * @title ERC3525 token receiver interface
- * @dev Interface for any contract that wants to support safeTransfers from ERC3525 contracts.
- * Note: the ERC-165 identifier for this interface is 0x009ce20b.
+ * @title EIP-3525 token receiver interface
+ * @dev Interface for a smart contract that wants to be informed by EIP-3525 contracts when 
+ *  receiving values from ANY addresses or EIP-3525 tokens.
+ * Note: the EIP-165 identifier for this interface is 0x009ce20b.
  */
 interface IERC3525Receiver {
     /**
-     * @notice Handle the receipt of an ERC3525 token value.
-     * @dev An ERC3525 smart contract MUST call this function on the recipient contract after a 
-     *  value transfer (i.e. `safeTransferFrom(uint256,uint256,uint256,bytes)`).
+     * @notice Handle the receipt of an EIP-3525 token value.
+     * @dev An EIP-3525 smart contract MUST check whether this function is implemented by the 
+     *  recipient contract, if the recipient contract implements this function, the EIP-3525 
+     *  contract MUST call this function after a value transfer (i.e. `transferFrom(uint256,
+     *  uint256,uint256,bytes)`).
      *  MUST return 0x009ce20b (i.e. `bytes4(keccak256('onERC3525Received(address,uint256,uint256,
      *  uint256,bytes)'))`) if the transfer is accepted.
      *  MUST revert or return any value other than 0x009ce20b if the transfer is rejected.
@@ -23,4 +27,5 @@ interface IERC3525Receiver {
      *  unless the transfer is rejected.
      */
     function onERC3525Received(address _operator, uint256 _fromTokenId, uint256 _toTokenId, uint256 _value, bytes calldata _data) external returns (bytes4);
+
 }
