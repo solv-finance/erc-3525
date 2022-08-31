@@ -11,7 +11,7 @@ contract ERC3525MetadataDescriptor is IERC3525MetadataDescriptor {
 
     using StringConvertor for uint256;
 
-    function generateContractURI() external view override returns (string memory) {
+    function constructContractURI() external view override returns (string memory) {
         IERC3525Metadata erc3525 = IERC3525Metadata(msg.sender);
         return 
             string(
@@ -36,7 +36,7 @@ contract ERC3525MetadataDescriptor is IERC3525MetadataDescriptor {
             );
     }
 
-    function generateSlotURI(uint256 slot_) external view override returns (string memory) {
+    function constructSlotURI(uint256 slot_) external view override returns (string memory) {
         return
             string(
                 abi.encodePacked(
@@ -60,7 +60,7 @@ contract ERC3525MetadataDescriptor is IERC3525MetadataDescriptor {
             );
     }
 
-    function generateTokenURI(uint256 tokenId_) external view override returns (string memory) {
+    function constructTokenURI(uint256 tokenId_) external view override returns (string memory) {
         IERC3525Metadata erc3525 = IERC3525Metadata(msg.sender);
         return 
             string(
