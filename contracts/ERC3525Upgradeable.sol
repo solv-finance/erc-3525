@@ -4,12 +4,14 @@ pragma solidity ^0.8.0;
 import "./IERC3525.sol";
 import "./IERC3525Receiver.sol";
 import "./extensions/IERC3525Metadata.sol";
+import "./periphery/interface/IERC3525MetadataDescriptor.sol";
 import "./openzeppelin/ContextUpgradeable.sol";
 import "./openzeppelin/ERC165Upgradeable.sol";
 import "./openzeppelin/IERC721Enumerable.sol";
 import "./openzeppelin/IERC721Metadata.sol";
 import "./openzeppelin/IERC721Receiver.sol";
 import "./utils/Base64.sol";
+import "./utils/Strings.sol";
 import "./utils/StringConvertor.sol";
 
 abstract contract ERC3525Upgradeable is
@@ -18,8 +20,11 @@ abstract contract ERC3525Upgradeable is
     ERC165Upgradeable,
     ContextUpgradeable
 {
+    using Strings for address;
     using StringConvertor for uint256;
     using AddressUpgradeable for address;
+
+    event SetMetadataDescriptor(address indexed metadataDescriptor);
 
     struct TokenData {
         uint256 id;
@@ -51,6 +56,7 @@ abstract contract ERC3525Upgradeable is
 
     mapping(address => AddressData) private _addressData;
 
+    IERC3525MetadataDescriptor public metadataDescriptor;
 
     // solhint-disable-next-line
     function __ERC3525_init(string memory name_, string memory symbol_, uint8 decimals_) internal onlyInitializing {
@@ -109,21 +115,41 @@ abstract contract ERC3525Upgradeable is
         return _allTokens[_allTokensIndex[tokenId_]].slot;
     }
 
-    function contractURI() public view virtual override returns (string memory) {
+    function _baseURI() internal view virtual returns (string memory) {
         return "";
     }
 
+    function contractURI() public view virtual override returns (string memory) {
+        string memory baseURI = _baseURI();
+        return 
+            address(metadataDescriptor) == address(0) ? 
+                metadataDescriptor.generateContractURI() :
+                bytes(baseURI).length > 0 ? 
+                    string(abi.encodePacked(baseURI, "contract/", Strings.toHexString(address(this)))) : 
+                    "";
+    }
+
     function slotURI(uint256 slot_) public view virtual override returns (string memory) {
-        slot_;
-        return "";
+        string memory baseURI = _baseURI();
+        return 
+            address(metadataDescriptor) == address(0) ? 
+                metadataDescriptor.generateSlotURI(slot_) : 
+                bytes(baseURI).length > 0 ? 
+                    string(abi.encodePacked(baseURI, "slot/", slot_.toString())) : 
+                    "";
     }
 
     /**
      * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
      */
     function tokenURI(uint256 tokenId_) public view virtual override returns (string memory) {
-        tokenId_;
-        return "";
+        string memory baseURI = _baseURI();
+        return 
+            address(metadataDescriptor) == address(0) ? 
+                metadataDescriptor.generateTokenURI(tokenId_) : 
+                bytes(baseURI).length > 0 ? 
+                    string(abi.encodePacked(baseURI, tokenId_.toString())) : 
+                    "";
     }
 
     function approve(uint256 tokenId_, address to_, uint256 value_) public payable virtual override {
@@ -569,6 +595,11 @@ abstract contract ERC3525Upgradeable is
         uint256 value_
     ) internal virtual {}
     /* solhint-enable */
+
+    function _setMetadataDescriptor(address metadataDescriptor_) internal virtual {
+        metadataDescriptor = IERC3525MetadataDescriptor(metadataDescriptor_);
+        emit SetMetadataDescriptor(metadataDescriptor_);
+    }
 
     function _createOriginalTokenId() internal virtual returns (uint256) {
         return _createDefaultTokenId();
