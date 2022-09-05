@@ -123,7 +123,7 @@ abstract contract ERC3525Upgradeable is
         string memory baseURI = _baseURI();
         return 
             address(metadataDescriptor) == address(0) ? 
-                metadataDescriptor.generateContractURI() :
+                metadataDescriptor.constructContractURI() :
                 bytes(baseURI).length > 0 ? 
                     string(abi.encodePacked(baseURI, "contract/", Strings.toHexString(address(this)))) : 
                     "";
@@ -133,7 +133,7 @@ abstract contract ERC3525Upgradeable is
         string memory baseURI = _baseURI();
         return 
             address(metadataDescriptor) == address(0) ? 
-                metadataDescriptor.generateSlotURI(slot_) : 
+                metadataDescriptor.constructSlotURI(slot_) : 
                 bytes(baseURI).length > 0 ? 
                     string(abi.encodePacked(baseURI, "slot/", slot_.toString())) : 
                     "";
@@ -146,7 +146,7 @@ abstract contract ERC3525Upgradeable is
         string memory baseURI = _baseURI();
         return 
             address(metadataDescriptor) == address(0) ? 
-                metadataDescriptor.generateTokenURI(tokenId_) : 
+                metadataDescriptor.constructTokenURI(tokenId_) : 
                 bytes(baseURI).length > 0 ? 
                     string(abi.encodePacked(baseURI, tokenId_.toString())) : 
                     "";
@@ -477,7 +477,7 @@ abstract contract ERC3525Upgradeable is
 
         require(
             _checkOnERC3525Received(fromTokenId_, toTokenId_, value_, ""),
-            "ERC3525: rejected by the receiver"
+            "ERC3525: transfer to non ERC3525Receiver"
         );
     }
 
@@ -511,7 +511,7 @@ abstract contract ERC3525Upgradeable is
         _transferTokenId(from_, to_, tokenId_);
         require(
             _checkOnERC721Received(from_, to_, tokenId_, data_),
-            "ERC3525: transfer to non ERC721Receiver implementer"
+            "ERC3525: transfer to non ERC721Receiver"
         );
     }
 
@@ -524,12 +524,11 @@ abstract contract ERC3525Upgradeable is
         address to = ownerOf(toTokenId_);
         if (to.isContract() && IERC165(to).supportsInterface(type(IERC3525Receiver).interfaceId)) {
             try
-                IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_)
-            returns (bytes4 retval) {
+                IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_) returns (bytes4 retval) {
                 return retval == IERC3525Receiver.onERC3525Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
-                    revert( "ERC3525: transfer to non ERC3525Receiver implementer");
+                    revert( "ERC3525: transfer to non ERC3525Receiver");
                 } else {
                     // solhint-disable-next-line
                     assembly {
@@ -558,12 +557,13 @@ abstract contract ERC3525Upgradeable is
         uint256 tokenId_,
         bytes memory data_
     ) private returns (bool) {
-        if (to_.isContract()) {
-            try IERC721Receiver(to_).onERC721Received(_msgSender(), from_, tokenId_, data_) returns (bytes4 retval) {
+        if (to_.isContract() && IERC165(to_).supportsInterface(type(IERC721Receiver).interfaceId)) {
+            try 
+                IERC721Receiver(to_).onERC721Received(_msgSender(), from_, tokenId_, data_) returns (bytes4 retval) {
                 return retval == IERC721Receiver.onERC721Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
-                    revert("ERC721: transfer to non ERC721Receiver implementer");
+                    revert("ERC721: transfer to non ERC721Receiver");
                 } else {
                     // solhint-disable-next-line
                     assembly {
@@ -618,5 +618,5 @@ abstract contract ERC3525Upgradeable is
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
      */
-    uint256[43] private __gap;
+    uint256[42] private __gap;
 }
