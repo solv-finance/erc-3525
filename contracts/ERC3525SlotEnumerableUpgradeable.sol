@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import "./ERC3525Upgradeable.sol";
 import "./extensions/IERC3525SlotEnumerable.sol";
 
-abstract contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnumerable {
+contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnumerable {
 
     struct SlotData {
         uint256 slot;
@@ -20,6 +20,12 @@ abstract contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC35
 
     // slot => index
     mapping(uint256 => uint256) private _allSlotsIndex;
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525Upgradeable) returns (bool) {
+        return
+            interfaceId == type(IERC3525SlotEnumerable).interfaceId ||
+            super.supportsInterface(interfaceId);
+    }
 
     function slotCount() public view virtual override returns (uint256) {
         return _allSlots.length;

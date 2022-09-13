@@ -5,10 +5,16 @@ pragma solidity ^0.8.0;
 import "./ERC3525Upgradeable.sol";
 import "./extensions/IERC3525SlotApprovable.sol";
 
-abstract contract ERC3525SlotApprovableUpgradeable is ERC3525Upgradeable, IERC3525SlotApprovable {
+contract ERC3525SlotApprovableUpgradeable is ERC3525Upgradeable, IERC3525SlotApprovable {
 
     // @dev owner => slot => operator => approved
     mapping(address => mapping(uint256 => mapping(address => bool))) private _slotApprovals;
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525Upgradeable) returns (bool) {
+        return
+            interfaceId == type(IERC3525SlotApprovable).interfaceId ||
+            super.supportsInterface(interfaceId);
+    }
 
     function setApprovalForSlot(
         address owner_,

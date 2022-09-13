@@ -39,5 +39,9 @@
     "hardhat-tracer": "^1.1.0-rc.8",
     "solc": "^0.8.13",
     "solhint": "^3.3.7"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
+    "@openzeppelin/contracts-upgradeable": "^4.7.3"
   }
 }

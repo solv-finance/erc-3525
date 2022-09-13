@@ -1,8 +1,9 @@
 //SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "../ERC3525Upgradeable.sol";
-import "../openzeppelin/StringsUpgradeable.sol";
 import "../utils/StringConvertor.sol";
 
 contract ERC3525Mock is ERC3525Upgradeable {
@@ -191,7 +192,7 @@ contract ERC3525Mock is ERC3525Upgradeable {
                         abi.encodePacked(
                             '{"name":"underlying",',
                             '"description":"Address of the underlying token locked in this contract.",',
-                            '"value":"', StringsUpgradeable.toHexString(uint256(uint160(slotDetail.underlying))), '",',
+                            '"value":"', Strings.toHexString(uint256(uint160(slotDetail.underlying))), '",',
                             '"order":1,', 
                             '"display_type":"string"},'
                         ),
@@ -253,7 +254,7 @@ contract ERC3525Mock is ERC3525Upgradeable {
                 abi.encodePacked(
                     /* solhint-disable */
                     '{"underlying":"',
-                    StringsUpgradeable.toHexString(uint256(uint160(slotDetail.underlying))),
+                    Strings.toHexString(uint256(uint160(slotDetail.underlying))),
                     '","vesting_type":"',
                     uint256(slotDetail.vestingType).toString(),
                     '","maturity":',

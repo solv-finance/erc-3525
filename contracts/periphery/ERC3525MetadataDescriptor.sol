@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/Base64.sol";
 import "./interface/IERC3525MetadataDescriptor.sol";
 import "../extensions/IERC3525Metadata.sol";
-import "../utils/Base64.sol";
 import "../utils/StringConvertor.sol";
 
 contract ERC3525MetadataDescriptor is IERC3525MetadataDescriptor {

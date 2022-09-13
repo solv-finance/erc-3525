@@ -1,17 +1,19 @@
 //SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "./IERC3525.sol";
 import "./IERC3525Receiver.sol";
 import "./extensions/IERC3525Metadata.sol";
 import "./periphery/interface/IERC3525MetadataDescriptor.sol";
-import "./openzeppelin/ContextUpgradeable.sol";
-import "./openzeppelin/ERC165Upgradeable.sol";
-import "./openzeppelin/IERC721Enumerable.sol";
-import "./openzeppelin/IERC721Metadata.sol";
-import "./openzeppelin/IERC721Receiver.sol";
-import "./utils/Base64.sol";
-import "./utils/Strings.sol";
 import "./utils/StringConvertor.sol";
 
 abstract contract ERC3525Upgradeable is
@@ -73,7 +75,9 @@ abstract contract ERC3525Upgradeable is
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165Upgradeable) returns (bool) {
         return
             interfaceId == type(IERC3525).interfaceId ||
+            interfaceId == type(IERC721).interfaceId ||
             interfaceId == type(IERC3525Metadata).interfaceId ||
+            interfaceId == type(IERC721Enumerable).interfaceId ||
             super.supportsInterface(interfaceId);
     }
 
