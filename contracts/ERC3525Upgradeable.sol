@@ -303,7 +303,7 @@ abstract contract ERC3525Upgradeable is
         return _allTokens.length != 0 && _allTokens[_allTokensIndex[tokenId_]].id == tokenId_;
     }
 
-    function _mintValue(address to_, uint256 slot_, uint256 value_) internal virtual {
+    function _mintValue(address to_, uint256 slot_, uint256 value_) internal virtual returns (uint256) {
         uint256 tokenId = _createOriginalTokenId();
 
         require(to_ != address(0), "ERC3525: mint to the zero address");
@@ -318,6 +318,8 @@ abstract contract ERC3525Upgradeable is
         emit TransferValue(0, tokenId, value_);
 
         _afterValueTransfer(address(0), to_, 0, tokenId, slot_, value_);
+
+        return tokenId;
     }
 
     function _mint(address to_, uint256 tokenId_, uint256 slot_) private {
