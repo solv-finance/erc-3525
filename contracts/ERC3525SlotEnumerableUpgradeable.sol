@@ -57,6 +57,15 @@ contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnu
         return slotData.slotTokens.length > 0 && slotData.slotTokens[_slotTokensIndex[slot_][tokenId_]] == tokenId_;
     }
 
+    function _createSlot(uint256 slot_) internal virtual {
+        require(!_slotExists(slot_), "slot already exists");
+        SlotData memory slotData = SlotData({
+            slot: slot_, 
+            slotTokens: new uint256[](0)
+        });
+        _addSlotToAllSlotsEnumeration(slotData);
+    }
+
     function _beforeValueTransfer(
         address from_,
         address to_,
@@ -66,11 +75,7 @@ contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnu
         uint256 value_
     ) internal virtual override {
         if (from_ == address(0) && fromTokenId_ == 0 && !_slotExists(slot_)) {
-            SlotData memory slotData = SlotData({
-                slot: slot_, 
-                slotTokens: new uint256[](0)
-            });
-            _addSlotToAllSlotsEnumeration(slotData);
+            _createSlot(slot_);
         }
 
         //Shh - currently unused
