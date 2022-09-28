@@ -58,7 +58,7 @@ contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnu
     }
 
     function _createSlot(uint256 slot_) internal virtual {
-        require(!_slotExists(slot_), "slot already exists");
+        require(!_slotExists(slot_), "ERC3525SlotEnumerable: slot already exists");
         SlotData memory slotData = SlotData({
             slot: slot_, 
             slotTokens: new uint256[](0)

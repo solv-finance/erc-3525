@@ -126,7 +126,7 @@ abstract contract ERC3525Upgradeable is
     function contractURI() public view virtual override returns (string memory) {
         string memory baseURI = _baseURI();
         return 
-            address(metadataDescriptor) == address(0) ? 
+            address(metadataDescriptor) != address(0) ? 
                 metadataDescriptor.constructContractURI() :
                 bytes(baseURI).length > 0 ? 
                     string(abi.encodePacked(baseURI, "contract/", Strings.toHexString(address(this)))) : 
@@ -136,7 +136,7 @@ abstract contract ERC3525Upgradeable is
     function slotURI(uint256 slot_) public view virtual override returns (string memory) {
         string memory baseURI = _baseURI();
         return 
-            address(metadataDescriptor) == address(0) ? 
+            address(metadataDescriptor) != address(0) ? 
                 metadataDescriptor.constructSlotURI(slot_) : 
                 bytes(baseURI).length > 0 ? 
                     string(abi.encodePacked(baseURI, "slot/", slot_.toString())) : 
@@ -149,7 +149,7 @@ abstract contract ERC3525Upgradeable is
     function tokenURI(uint256 tokenId_) public view virtual override returns (string memory) {
         string memory baseURI = _baseURI();
         return 
-            address(metadataDescriptor) == address(0) ? 
+            address(metadataDescriptor) != address(0) ? 
                 metadataDescriptor.constructTokenURI(tokenId_) : 
                 bytes(baseURI).length > 0 ? 
                     string(abi.encodePacked(baseURI, tokenId_.toString())) : 
