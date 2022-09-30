@@ -278,6 +278,31 @@ describe("ERC3525", function () {
       expect(await erc3525["balanceOf(uint256)"](t.id)).to.eq(expectToValue);
     });
 
+    it("transfer value to address should be success", async () => {
+      const erc3525 = await deploy();
+      const [from, to] = await ethers.getSigners();
+
+      const f = await mintWithOutDeploy(erc3525, from, "3525");
+      const value = f.balance.div(2);
+      const expectFromValue = f.balance.sub(value);
+      const expectToValue = value;
+
+      expect(
+        await erc3525["transferFrom(uint256,address,uint256)"](
+          f.id,
+          to.address,
+          value
+        )
+      );
+      let eventFilter = erc3525.filters["TransferValue"]();
+      let block = await ethers.provider.getBlock("latest");
+      let event = await erc3525.queryFilter(eventFilter, block.number, "latest");
+      let args = event[0]["args"];
+      const t_id = args[1];
+      expect(await erc3525["balanceOf(uint256)"](f.id)).to.eq(expectFromValue);
+      expect(await erc3525["balanceOf(uint256)"](t_id)).to.eq(expectToValue);
+    });
+
     it("approved value should be correct after transfer value to id", async () => {
       const erc3525 = await deploy();
       const [from, to, spender] = await ethers.getSigners();
