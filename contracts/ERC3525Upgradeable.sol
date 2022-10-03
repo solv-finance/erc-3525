@@ -350,8 +350,8 @@ abstract contract ERC3525Upgradeable is
         _beforeValueTransfer(owner, address(0), tokenId_, 0, slot, value);
 
         _clearApprovedValues(tokenId_);
-        _removeTokenFromAllTokensEnumeration(tokenId_);
         _removeTokenFromOwnerEnumeration(owner, tokenId_);
+        _removeTokenFromAllTokensEnumeration(tokenId_);
 
         emit TransferValue(tokenId_, 0, value);
         emit Transfer(owner, address(0), tokenId_);
@@ -449,14 +449,14 @@ abstract contract ERC3525Upgradeable is
         uint256 toTokenId_,
         uint256 value_
     ) internal virtual {
-        require(_exists(fromTokenId_), "ERC35255: transfer from nonexistent token");
-        require(_exists(toTokenId_), "ERC35255: transfer to nonexistent token");
+        require(_exists(fromTokenId_), "ERC3525: transfer from nonexistent token");
+        require(_exists(toTokenId_), "ERC3525: transfer to nonexistent token");
 
         TokenData storage fromTokenData = _allTokens[_allTokensIndex[fromTokenId_]];
         TokenData storage toTokenData = _allTokens[_allTokensIndex[toTokenId_]];
 
         require(fromTokenData.balance >= value_, "ERC3525: transfer amount exceeds balance");
-        require(fromTokenData.slot == toTokenData.slot, "ERC3535: transfer to token with different slot");
+        require(fromTokenData.slot == toTokenData.slot, "ERC3525: transfer to token with different slot");
 
         _beforeValueTransfer(
             fromTokenData.owner,
