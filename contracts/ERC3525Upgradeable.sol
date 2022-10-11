@@ -53,7 +53,7 @@ abstract contract ERC3525Upgradeable is
 
     TokenData[] private _allTokens;
 
-    //key: id
+    // key: id
     mapping(uint256 => uint256) private _allTokensIndex;
 
     mapping(address => AddressData) private _addressData;
@@ -180,7 +180,7 @@ abstract contract ERC3525Upgradeable is
         _spendAllowance(_msgSender(), fromTokenId_, value_);
 
         uint256 newTokenId = _createDerivedTokenId(fromTokenId_);
-        _mint(to_, newTokenId, ERC3525Upgradeable.slotOf(fromTokenId_));
+        _mintValue(to_, ERC3525Upgradeable.slotOf(fromTokenId_), newTokenId, 0);
         _transferValue(fromTokenId_, newTokenId, value_);
 
         return newTokenId;
@@ -305,21 +305,24 @@ abstract contract ERC3525Upgradeable is
 
     function _mintValue(address to_, uint256 slot_, uint256 value_) internal virtual returns (uint256) {
         uint256 tokenId = _createOriginalTokenId();
+        return _mintValue(to_, slot_, tokenId, value_);
+    }
 
+    function _mintValue(address to_, uint256 slot_, uint256 tokenId_, uint256 value_) internal virtual returns (uint256) {
         require(to_ != address(0), "ERC3525: mint to the zero address");
-        require(tokenId != 0, "ERC3525: cannot mint zero tokenId");
-        require(!_exists(tokenId), "ERC3525: token already minted");
+        require(tokenId_ != 0, "ERC3525: cannot mint zero tokenId");
+        require(!_exists(tokenId_), "ERC3525: token already minted");
 
-        _beforeValueTransfer(address(0), to_, 0, tokenId, slot_, value_);
+        _beforeValueTransfer(address(0), to_, 0, tokenId_, slot_, value_);
 
-        _mint(to_, tokenId, slot_);
-        _allTokens[_allTokensIndex[tokenId]].balance = value_;
+        _mint(to_, tokenId_, slot_);
+        _allTokens[_allTokensIndex[tokenId_]].balance = value_;
 
-        emit TransferValue(0, tokenId, value_);
+        emit TransferValue(0, tokenId_, value_);
 
-        _afterValueTransfer(address(0), to_, 0, tokenId, slot_, value_);
+        _afterValueTransfer(address(0), to_, 0, tokenId_, slot_, value_);
 
-        return tokenId;
+        return tokenId_;
     }
 
     function _mint(address to_, uint256 tokenId_, uint256 slot_) private {

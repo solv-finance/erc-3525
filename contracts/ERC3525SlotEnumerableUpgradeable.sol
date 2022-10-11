@@ -74,6 +74,8 @@ contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnu
         uint256 slot_,
         uint256 value_
     ) internal virtual override {
+        super._beforeValueTransfer(from_, to_, fromTokenId_, toTokenId_, slot_, value_);
+
         if (from_ == address(0) && fromTokenId_ == 0 && !_slotExists(slot_)) {
             _createSlot(slot_);
         }
@@ -100,6 +102,8 @@ contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnu
 
         //Shh - currently unused
         value_;
+
+        super._afterValueTransfer(from_, to_, fromTokenId_, toTokenId_, slot_, value_);
     }
 
     function _addSlotToAllSlotsEnumeration(SlotData memory slotData) private {
