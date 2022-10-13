@@ -10,7 +10,6 @@ contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnu
     struct SlotData {
         uint256 slot;
         uint256[] slotTokens;
-        // mapping(uint256 => uint256) slotTokensIndex;
     }
 
     // slot => tokenId => index
@@ -64,6 +63,7 @@ contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnu
             slotTokens: new uint256[](0)
         });
         _addSlotToAllSlotsEnumeration(slotData);
+        emit SlotChanged(0, 0, slot_);
     }
 
     function _beforeValueTransfer(
