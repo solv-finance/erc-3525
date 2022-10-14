@@ -40,8 +40,7 @@ library StringConvertor {
         returns (bytes memory newString)
     {
         newString = new bytes(self.length - cutLength);
-        uint256 index = newString.length;
-        while (index-- > 0) {
+        for (uint256 index = 0; index < newString.length; index++) {
             newString[index] = self[index];
         }
     }
