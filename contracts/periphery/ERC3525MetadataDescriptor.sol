@@ -2,14 +2,14 @@
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "./interface/IERC3525MetadataDescriptor.sol";
 import "../extensions/IERC3525Metadata.sol";
-import "../utils/StringConvertor.sol";
 
 contract ERC3525MetadataDescriptor is IERC3525MetadataDescriptor {
 
-    using StringConvertor for uint256;
+    using Strings for uint256;
 
     function constructContractURI() external view override returns (string memory) {
         IERC3525Metadata erc3525 = IERC3525Metadata(msg.sender);

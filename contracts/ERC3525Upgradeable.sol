@@ -14,7 +14,6 @@ import "./IERC3525.sol";
 import "./IERC3525Receiver.sol";
 import "./extensions/IERC3525Metadata.sol";
 import "./periphery/interface/IERC3525MetadataDescriptor.sol";
-import "./utils/StringConvertor.sol";
 
 abstract contract ERC3525Upgradeable is
     IERC3525Metadata,
@@ -23,7 +22,7 @@ abstract contract ERC3525Upgradeable is
     ContextUpgradeable
 {
     using Strings for address;
-    using StringConvertor for uint256;
+    using Strings for uint256;
     using AddressUpgradeable for address;
 
     event SetMetadataDescriptor(address indexed metadataDescriptor);
