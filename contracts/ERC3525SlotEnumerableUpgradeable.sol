@@ -121,7 +121,7 @@ contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnu
         SlotData storage slotData = _allSlots[_allSlotsIndex[slot_]];
         uint256 lastTokenIndex = slotData.slotTokens.length - 1;
         uint256 lastTokenId = slotData.slotTokens[lastTokenIndex];
-        uint256 tokenIndex = slotData.slotTokens[tokenId_];
+        uint256 tokenIndex = _slotTokensIndex[slot_][tokenId_];
 
         slotData.slotTokens[tokenIndex] = lastTokenId;
         _slotTokensIndex[slot_][lastTokenId] = tokenIndex;
