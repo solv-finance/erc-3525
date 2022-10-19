@@ -1,9 +1,10 @@
 import { BigNumber } from "ethers";
 import { expect } from "chai";
-import { ethers } from "hardhat";
-import { ERC3525BurnableUpgradeable } from "../typechain";
+import { ERC3525BurnableUpgradeable } from "../typechain-types/contracts";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { TokenData, ZERO_ADDRESS } from "./lib/constants";
+const hre = require("hardhat");
+const { ethers } = hre;
 
 describe("ERC3525", function () {
   const deploy = async (): Promise<ERC3525BurnableUpgradeable> => {
@@ -83,7 +84,7 @@ describe("ERC3525", function () {
 
       expect(await t.erc3525["balanceOf(address)"](t.owner)).to.eq(t.id);
       expect(await t.erc3525.ownerOf(t.id)).to.eq(t.owner);
-      await expect(t.erc3525.ownerOf(5)).revertedWith(
+      await expect(t.erc3525.ownerOf(5)).rejectedWith(
         "ERC3525: owner query for nonexistent token"
       );
       expect(await t.erc3525["balanceOf(uint256)"](t.id)).to.eq(t.balance);
@@ -117,8 +118,8 @@ describe("ERC3525", function () {
       expect(await t.erc3525.getApproved(t.id)).to.eq(approval.address);
       await expect(
         t.erc3525["approve(address,uint256)"](approval.address, 5)
-      ).revertedWith("ERC3525: owner query for nonexistent token");
-      await expect(t.erc3525.getApproved(6)).revertedWith(
+      ).rejectedWith("ERC3525: owner query for nonexistent token");
+      await expect(t.erc3525.getApproved(6)).rejectedWith(
         "ERC3525: approved query for nonexistent token"
       );
     });
@@ -170,7 +171,7 @@ describe("ERC3525", function () {
           approval.address,
           t.balance
         )
-      ).revertedWith("ERC3525: approve caller is not owner nor approved for all");
+      ).rejectedWith("ERC3525: approve caller is not owner nor approved for all");
 
       await expect(
         t.erc3525["transferFrom(address,address,uint256)"](
@@ -178,7 +179,7 @@ describe("ERC3525", function () {
           other.address,
           t.id
         )
-      ).revertedWith("ERC3525: transfer caller is not owner nor approved");
+      ).rejectedWith("ERC3525: transfer caller is not owner nor approved");
     });
 
     it("transfer id should  be success after setApprovalForAll", async () => {

@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { ERC3525BurnableUpgradeable } from "../../typechain";
+import { ERC3525BurnableUpgradeable } from "../../typechain-types/contracts";
 
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const ZERO_TOKEN_ID = 0;
