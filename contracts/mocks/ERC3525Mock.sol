@@ -9,6 +9,7 @@ import "../utils/StringConvertor.sol";
 contract ERC3525Mock is ERC3525Upgradeable {
 
     using StringConvertor for uint256;
+    using Strings for uint256;
 
     /**
      * @notice Properties of the slot, which determine the value of slot.
