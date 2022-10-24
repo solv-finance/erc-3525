@@ -1,12 +1,34 @@
-//SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "./ERC3525MintableUpgradeable.sol";
 
-contract ERC3525BurnableUpgradeable is ERC3525MintableUpgradeable {
-    function burn(uint256 tokenId_) public {
-        require(_msgSender() == ERC3525Upgradeable.ownerOf(tokenId_), "only owner");
+contract ERC3525BurnableUpgradeable is Initializable, ContextUpgradeable, ERC3525MintableUpgradeable {
+
+    function initialize(
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_
+    ) public virtual override initializer {
+        __ERC3525Burnable_init(name_, symbol_, decimals_);
+    }
+
+    function __ERC3525Burnable_init(
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_
+    ) internal onlyInitializing{
+        __ERC3525_init_unchained(name_, symbol_, decimals_);
+    }
+
+    function __ERC3525Burnable_init_unchained() internal onlyInitializing{
+    }
+
+    function burn(uint256 tokenId_) public virtual {
+        require(_isApprovedOrOwner(_msgSender(), tokenId_), "ERC3525: caller is not token owner nor approved");
         ERC3525Upgradeable._burn(tokenId_);
     }
 

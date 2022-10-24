@@ -2,10 +2,12 @@
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "./ERC3525Upgradeable.sol";
 import "./extensions/IERC3525SlotEnumerable.sol";
 
-contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnumerable {
+contract ERC3525SlotEnumerableUpgradeable is Initializable, ContextUpgradeable, ERC3525Upgradeable, IERC3525SlotEnumerable {
 
     struct SlotData {
         uint256 slot;
@@ -19,6 +21,25 @@ contract ERC3525SlotEnumerableUpgradeable is ERC3525Upgradeable, IERC3525SlotEnu
 
     // slot => index
     mapping(uint256 => uint256) private _allSlotsIndex;
+
+    function initialize(
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_
+    ) public virtual initializer {
+        __ERC3525SlotEnumerable_init(name_, symbol_, decimals_);
+    }
+
+    function __ERC3525SlotEnumerable_init(
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_
+    ) internal onlyInitializing{
+        __ERC3525_init_unchained(name_, symbol_, decimals_);
+    }
+
+    function __ERC3525SlotEnumerable_init_unchained() internal onlyInitializing {
+    }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525Upgradeable) returns (bool) {
         return

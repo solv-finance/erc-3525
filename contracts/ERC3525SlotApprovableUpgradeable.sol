@@ -2,13 +2,34 @@
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "./ERC3525Upgradeable.sol";
 import "./extensions/IERC3525SlotApprovable.sol";
 
-contract ERC3525SlotApprovableUpgradeable is ERC3525Upgradeable, IERC3525SlotApprovable {
+contract ERC3525SlotApprovableUpgradeable is Initializable, ContextUpgradeable, ERC3525Upgradeable, IERC3525SlotApprovable {
 
     // @dev owner => slot => operator => approved
     mapping(address => mapping(uint256 => mapping(address => bool))) private _slotApprovals;
+
+    function initialize(
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_
+    ) public virtual initializer {
+        __ERC3525SlotApprovable_init(name_, symbol_, decimals_);
+    }
+
+    function __ERC3525SlotApprovable_init(
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_
+    ) internal onlyInitializing{
+        __ERC3525_init_unchained(name_, symbol_, decimals_);
+    }
+
+    function __ERC3525SlotApprovable_init_unchained() internal onlyInitializing {
+    }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525Upgradeable) returns (bool) {
         return
