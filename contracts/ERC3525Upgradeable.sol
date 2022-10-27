@@ -176,7 +176,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         _spendAllowance(_msgSender(), fromTokenId_, value_);
 
         uint256 newTokenId = _createDerivedTokenId(fromTokenId_);
-        _mintValue(to_, ERC3525Upgradeable.slotOf(fromTokenId_), newTokenId, 0);
+        _mint(to_,  newTokenId, ERC3525Upgradeable.slotOf(fromTokenId_), 0);
         _transferValue(fromTokenId_, newTokenId, value_);
 
         return newTokenId;
@@ -302,20 +302,27 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         require(_exists(tokenId_), "ERC3525: invalid token ID");
     }
 
-    function _mintValue(address to_, uint256 slot_, uint256 value_) internal virtual returns (uint256) {
+    function _mint(address to_, uint256 slot_, uint256 value_) internal virtual returns (uint256) {
         uint256 tokenId = _createOriginalTokenId();
-        return _mintValue(to_, slot_, tokenId, value_);
+        _mint(to_, slot_, tokenId, value_);  
+        return tokenId;
     }
 
-    function _mintValue(address to_, uint256 slot_, uint256 tokenId_, uint256 value_) internal virtual returns (uint256) {
+    function _mint(address to_,uint256 tokenId_, uint256 slot_,  uint256 value_) internal virtual {
         require(to_ != address(0), "ERC3525: mint to the zero address");
-        require(tokenId_ != 0, "ERC3525: cannot mint zero tokenId");
-        require(!_exists(tokenId_), "ERC3525: token already minted");
+        _beforeValueTransfer(address(0), to_, 0, tokenId_, slot_, value_);
+        __mintToken(to_, tokenId_, slot_);
+        __mintValue(tokenId_, value_);
+        _afterValueTransfer(address(0), to_, 0, tokenId_, slot_, value_);
+    }
+
+    function _mintValue(address to_,  uint256 tokenId_, uint256 slot_, uint256 value_) internal virtual returns (uint256) {
+        require(to_ != address(0), "ERC3525: mint to the zero address");
+        _requireMinted(tokenId_);
 
         _beforeValueTransfer(address(0), to_, 0, tokenId_, slot_, value_);
 
-        _mint(to_, tokenId_, slot_);
-        _allTokens[_allTokensIndex[tokenId_]].balance = value_;
+        __mintValue(tokenId_, value_);
 
         emit TransferValue(0, tokenId_, value_);
 
@@ -324,7 +331,11 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         return tokenId_;
     }
 
-    function _mint(address to_, uint256 tokenId_, uint256 slot_) private {
+    function __mintValue(uint256 tokenId_, uint256 value_) private {
+        _allTokens[_allTokensIndex[tokenId_]].balance = value_;
+    }
+
+    function __mintToken(address to_, uint256 tokenId_, uint256 slot_) private {
         TokenData memory tokenData = TokenData({
             id: tokenId_,
             slot: slot_,
@@ -419,6 +430,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         address to_,
         uint256 value_
     ) internal virtual {
+        require(to_ != address(0), "ERC3525: approve value to the zero address");
         if (!_existApproveValue(to_, tokenId_)) {
             _allTokens[_allTokensIndex[tokenId_]].valueApprovals.push(to_);
         }
@@ -457,7 +469,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         TokenData storage fromTokenData = _allTokens[_allTokensIndex[fromTokenId_]];
         TokenData storage toTokenData = _allTokens[_allTokensIndex[toTokenId_]];
 
-        require(fromTokenData.balance >= value_, "ERC3525: transfer amount exceeds balance");
+        require(fromTokenData.balance >= value_, "ERC3525: insufficient balance for transfer");
         require(fromTokenData.slot == toTokenData.slot, "ERC3525: transfer to token with different slot");
 
         _beforeValueTransfer(
