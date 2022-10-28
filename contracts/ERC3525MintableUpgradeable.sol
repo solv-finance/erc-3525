@@ -29,11 +29,18 @@ contract ERC3525MintableUpgradeable is Initializable, ContextUpgradeable, ERC352
 
     function mint(
         address mintTo_,
+        uint256 tokenId_,
         uint256 slot_,
+        uint256 value_
+    ) public virtual {
+        ERC3525Upgradeable._mint(mintTo_, tokenId_, slot_, value_);
+    }
+
+    function mintValue(
         uint256 tokenId_,
         uint256 value_
     ) public virtual {
-        ERC3525Upgradeable._mintValue(mintTo_, slot_, tokenId_, value_);
+        ERC3525Upgradeable._mintValue(tokenId_, value_);
     }
 
     /**

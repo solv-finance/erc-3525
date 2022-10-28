@@ -32,6 +32,11 @@ contract ERC3525BurnableUpgradeable is Initializable, ContextUpgradeable, ERC352
         ERC3525Upgradeable._burn(tokenId_);
     }
 
+    function burnValue(uint256 tokenId_, uint256 burnValue_) public virtual {
+        require(_isApprovedOrOwner(_msgSender(), tokenId_), "ERC3525: caller is not token owner nor approved");
+        ERC3525Upgradeable._burnValue(tokenId_, burnValue_);
+    }
+
     /**
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.

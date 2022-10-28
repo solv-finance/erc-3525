@@ -176,7 +176,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         _spendAllowance(_msgSender(), fromTokenId_, value_);
 
         uint256 newTokenId = _createDerivedTokenId(fromTokenId_);
-        _mint(to_,  newTokenId, ERC3525Upgradeable.slotOf(fromTokenId_), 0);
+        _mint(to_, newTokenId, ERC3525Upgradeable.slotOf(fromTokenId_), 0);
         _transferValue(fromTokenId_, newTokenId, value_);
 
         return newTokenId;
@@ -188,7 +188,6 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         uint256 value_
     ) public payable virtual override {
         _spendAllowance(_msgSender(), fromTokenId_, value_);
-
         _transferValue(fromTokenId_, toTokenId_, value_);
     }
 
@@ -203,7 +202,6 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         uint256 tokenId_
     ) public virtual override {
         require(_isApprovedOrOwner(_msgSender(), tokenId_), "ERC3525: transfer caller is not owner nor approved");
-
         _transferTokenId(from_, to_, tokenId_);
     }
 
@@ -282,7 +280,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         return (
             operator_ == owner ||
             ERC3525Upgradeable.isApprovedForAll(owner, operator_) ||
-            getApproved(tokenId_) == operator_
+            ERC3525Upgradeable.getApproved(tokenId_) == operator_
         );
     }
 
@@ -308,31 +306,30 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         return tokenId;
     }
 
-    function _mint(address to_,uint256 tokenId_, uint256 slot_,  uint256 value_) internal virtual {
+    function _mint(address to_, uint256 tokenId_, uint256 slot_, uint256 value_) internal virtual {
         require(to_ != address(0), "ERC3525: mint to the zero address");
+        require(tokenId_ != 0, "ERC3525: cannot mint zero tokenId");
+        require(!_exists(tokenId_), "ERC3525: token already minted");
+
         _beforeValueTransfer(address(0), to_, 0, tokenId_, slot_, value_);
         __mintToken(to_, tokenId_, slot_);
         __mintValue(tokenId_, value_);
         _afterValueTransfer(address(0), to_, 0, tokenId_, slot_, value_);
     }
 
-    function _mintValue(address to_,  uint256 tokenId_, uint256 slot_, uint256 value_) internal virtual returns (uint256) {
-        require(to_ != address(0), "ERC3525: mint to the zero address");
+    function _mintValue(uint256 tokenId_, uint256 value_) internal virtual {
         _requireMinted(tokenId_);
 
-        _beforeValueTransfer(address(0), to_, 0, tokenId_, slot_, value_);
-
+        address owner = ERC3525Upgradeable.ownerOf(tokenId_);
+        uint256 slot = ERC3525Upgradeable.slotOf(tokenId_);
+        _beforeValueTransfer(address(0), owner, 0, tokenId_, slot, value_);
         __mintValue(tokenId_, value_);
-
-        emit TransferValue(0, tokenId_, value_);
-
-        _afterValueTransfer(address(0), to_, 0, tokenId_, slot_, value_);
-
-        return tokenId_;
+        _afterValueTransfer(address(0), owner, 0, tokenId_, slot, value_);
     }
 
     function __mintValue(uint256 tokenId_, uint256 value_) private {
-        _allTokens[_allTokensIndex[tokenId_]].balance = value_;
+        _allTokens[_allTokensIndex[tokenId_]].balance += value_;
+        emit TransferValue(0, tokenId_, value_);
     }
 
     function __mintToken(address to_, uint256 tokenId_, uint256 slot_) private {
@@ -367,10 +364,28 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         _removeTokenFromAllTokensEnumeration(tokenId_);
 
         emit TransferValue(tokenId_, 0, value);
-        emit Transfer(owner, address(0), tokenId_);
         emit SlotChanged(tokenId_, slot, 0);
+        emit Transfer(owner, address(0), tokenId_);
 
         _afterValueTransfer(owner, address(0), tokenId_, 0, slot, value);
+    }
+
+    function _burnValue(uint256 tokenId_, uint256 burnValue_) internal virtual {
+        _requireMinted(tokenId_);
+
+        TokenData storage tokenData = _allTokens[_allTokensIndex[tokenId_]];
+        address owner = tokenData.owner;
+        uint256 slot = tokenData.slot;
+        uint256 value = tokenData.balance;
+
+        require(value >= burnValue_, "ERC3525: burn value exceeds balance");
+
+        _beforeValueTransfer(owner, address(0), tokenId_, 0, slot, burnValue_);
+        
+        tokenData.balance -= burnValue_;
+        emit TransferValue(tokenId_, 0, burnValue_);
+        
+        _afterValueTransfer(owner, address(0), tokenId_, 0, slot, burnValue_);
     }
 
     function _addTokenToOwnerEnumeration(address to_, uint256 tokenId_) private {
@@ -509,7 +524,10 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         require(ERC3525Upgradeable.ownerOf(tokenId_) == from_, "ERC3525: transfer from invalid owner");
         require(to_ != address(0), "ERC3525: transfer to the zero address");
 
-        _beforeValueTransfer(from_, to_, tokenId_, tokenId_, slotOf(tokenId_), balanceOf(tokenId_));
+        uint256 slot = ERC3525Upgradeable.slotOf(tokenId_);
+        uint256 value = ERC3525Upgradeable.balanceOf(tokenId_);
+
+        _beforeValueTransfer(from_, to_, tokenId_, tokenId_, slot, value);
 
         _approve(address(0), tokenId_);
         _clearApprovedValues(tokenId_);
@@ -519,7 +537,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
 
         emit Transfer(from_, to_, tokenId_);
 
-        _afterValueTransfer(from_, to_, tokenId_, tokenId_, slotOf(tokenId_), balanceOf(tokenId_));
+        _afterValueTransfer(from_, to_, tokenId_, tokenId_, slot, value);
     }
 
     function _safeTransferTokenId(
@@ -541,7 +559,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         uint256 value_, 
         bytes memory data_
     ) private returns (bool) {
-        address to = ownerOf(toTokenId_);
+        address to = ERC3525Upgradeable.ownerOf(toTokenId_);
         if (to.isContract() && IERC165(to).supportsInterface(type(IERC3525Receiver).interfaceId)) {
             try
                 IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_) returns (bytes4 retval) {
@@ -631,7 +649,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
     }
 
     function _createDefaultTokenId() private view returns (uint256) {
-        return totalSupply() + 1;
+        return ERC3525Upgradeable.totalSupply() + 1;
     }
 
     /**
