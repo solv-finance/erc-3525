@@ -22,13 +22,13 @@ contract ERC3525SlotEnumerableUpgradeable is Initializable, ContextUpgradeable, 
     // slot => index
     mapping(uint256 => uint256) private _allSlotsIndex;
 
-    function initialize(
-        string memory name_,
-        string memory symbol_,
-        uint8 decimals_
-    ) public virtual initializer {
-        __ERC3525SlotEnumerable_init(name_, symbol_, decimals_);
-    }
+    // function initialize(
+    //     string memory name_,
+    //     string memory symbol_,
+    //     uint8 decimals_
+    // ) public virtual initializer {
+    //     __ERC3525SlotEnumerable_init(name_, symbol_, decimals_);
+    // }
 
     function __ERC3525SlotEnumerable_init(
         string memory name_,

@@ -12,13 +12,13 @@ contract ERC3525SlotApprovableUpgradeable is Initializable, ContextUpgradeable, 
     // @dev owner => slot => operator => approved
     mapping(address => mapping(uint256 => mapping(address => bool))) private _slotApprovals;
 
-    function initialize(
-        string memory name_,
-        string memory symbol_,
-        uint8 decimals_
-    ) public virtual initializer {
-        __ERC3525SlotApprovable_init(name_, symbol_, decimals_);
-    }
+    // function initialize(
+    //     string memory name_,
+    //     string memory symbol_,
+    //     uint8 decimals_
+    // ) public virtual initializer {
+    //     __ERC3525SlotApprovable_init(name_, symbol_, decimals_);
+    // }
 
     function __ERC3525SlotApprovable_init(
         string memory name_,
