@@ -302,7 +302,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
 
     function _mint(address to_, uint256 slot_, uint256 value_) internal virtual returns (uint256) {
         uint256 tokenId = _createOriginalTokenId();
-        _mint(to_, slot_, tokenId, value_);  
+        _mint(to_, tokenId, slot_, value_);  
         return tokenId;
     }
 
