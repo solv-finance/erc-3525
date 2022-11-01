@@ -19,7 +19,7 @@ const baseURI = 'https://api.example.com/v1/';
 
 const RECEIVER_MAGIC_VALUE = '0x150b7a02';
 
-let owner, newOwner, approved, anotherApproved, operator, other
+let owner, approved, anotherApproved, operator, other
 
 function shouldBehaveLikeERC721 (errorPrefix) {
 
@@ -33,13 +33,13 @@ function shouldBehaveLikeERC721 (errorPrefix) {
     beforeEach(async function () {
       [ owner, newOwner, approved, anotherApproved, operator, other ] = await ethers.getSigners();
       
-      await this.token.mint(owner.address, mintSlot, firstTokenId, mintValue);
-      await this.token.mint(owner.address, mintSlot, secondTokenId, mintValue);
+      await this.token.mint(owner.address, firstTokenId, mintSlot, mintValue);
+      await this.token.mint(owner.address, secondTokenId, mintSlot, mintValue);
       this.toWhom = other;
       this.ERC721ReceiverMockFactory = await ethers.getContractFactory('ERC721ReceiverMock');
     });
 
-    describe('balanceOf', function () {
+    describe('balanceOf(address)', function () {
       context('when the given address owns some tokens', function () {
         it('returns the amount of tokens owned by the given address', async function () {
           expect(await this.token['balanceOf(address)'](owner.address)).to.be.eq(2)
@@ -91,7 +91,7 @@ function shouldBehaveLikeERC721 (errorPrefix) {
         });
 
         it('emits a Transfer event', async function () {
-          expectEvent(receipt, 'Transfer', { from: owner.address, to: this.toWhom.address, tokenId: tokenId });
+          expectEvent(receipt, 'Transfer', { _from: owner.address, _to: this.toWhom.address, _tokenId: tokenId });
         });
 
         it('clears the approval for the token ID', async function () {
@@ -147,7 +147,7 @@ function shouldBehaveLikeERC721 (errorPrefix) {
 
         context('when sent to the owner', function () {
           beforeEach(async function () {
-            (tx = await transferFunction.call(this, owner.address, owner.address, tokenId, owner));
+            tx = await transferFunction.call(this, owner.address, owner.address, tokenId, owner);
             receipt = await tx.wait();
           });
 
@@ -161,9 +161,9 @@ function shouldBehaveLikeERC721 (errorPrefix) {
 
           it('emits only a transfer event', async function () {
             expectEvent(receipt, 'Transfer', {
-              from: owner.address,
-              to: owner.address,
-              tokenId: tokenId,
+              _from: owner.address,
+              _to: owner.address,
+              _tokenId: tokenId,
             });
           });
 
@@ -322,9 +322,9 @@ function shouldBehaveLikeERC721 (errorPrefix) {
       const itEmitsApprovalEvent = function (address) {
         it('emits an approval event', async function () {
           expectEvent(receipt, 'Approval', {
-            owner: owner.address,
-            approved: address == ZERO_ADDRESS ? ZERO_ADDRESS : approved.address,
-            tokenId: tokenId,
+            _owner: owner.address,
+            _approved: address == ZERO_ADDRESS ? ZERO_ADDRESS : approved.address,
+            _tokenId: tokenId,
           });
         });
       };
@@ -445,9 +445,9 @@ function shouldBehaveLikeERC721 (errorPrefix) {
             const receipt = await tx.wait();
 
             expectEvent(receipt, 'ApprovalForAll', {
-              owner: owner.address,
-              operator: operator.address,
-              approved: true,
+              _owner: owner.address,
+              _operator: operator.address,
+              _approved: true,
             });
           });
         });
@@ -468,9 +468,9 @@ function shouldBehaveLikeERC721 (errorPrefix) {
             const receipt = await tx.wait();
 
             expectEvent(receipt, 'ApprovalForAll', {
-              owner: owner.address,
-              operator: operator.address,
-              approved: true,
+              _owner: owner.address,
+              _operator: operator.address,
+              _approved: true,
             });
           });
 
@@ -497,9 +497,9 @@ function shouldBehaveLikeERC721 (errorPrefix) {
             const receipt = await tx.wait();
 
             expectEvent(receipt, 'ApprovalForAll', {
-              owner: owner.address,
-              operator: operator.address,
-              approved: true,
+              _owner: owner.address,
+              _operator: operator.address,
+              _approved: true,
             });
           });
         });
@@ -543,21 +543,21 @@ function shouldBehaveLikeERC721 (errorPrefix) {
     });
   });
 
-  describe('_mint(address, uint256)', function () {
+  describe('_mint', function () {
     it('reverts with a null destination address', async function () {
       await expect(
-        this.token.mint(ZERO_ADDRESS, mintSlot, firstTokenId, mintValue)
+        this.token.mint(ZERO_ADDRESS, firstTokenId, mintSlot, mintValue)
       ).to.revertedWith('ERC3525: mint to the zero address');
     });
 
     context('with minted token', async function () {
       beforeEach(async function () {
-        const tx = await this.token.mint(owner.address, mintSlot, firstTokenId, mintValue);
+        const tx = await this.token.mint(owner.address, firstTokenId, mintSlot, mintValue);
         this.receipt = await tx.wait();
       });
 
       it('emits a Transfer event', function () {
-        expectEvent(this.receipt, 'Transfer', { from: ZERO_ADDRESS, to: owner.address, tokenId: firstTokenId });
+        expectEvent(this.receipt, 'Transfer', { _from: ZERO_ADDRESS, _to: owner.address, _tokenId: firstTokenId });
       });
 
       it('creates the token', async function () {
@@ -567,7 +567,7 @@ function shouldBehaveLikeERC721 (errorPrefix) {
 
       it('reverts when adding a token id that already exists', async function () {
         await expect(
-          this.token.mint(owner.address, mintSlot, firstTokenId, mintValue)
+          this.token.mint(owner.address, firstTokenId, mintSlot, mintValue)
         ).to.revertedWith('ERC3525: token already minted');
       });
     });
@@ -582,8 +582,8 @@ function shouldBehaveLikeERC721 (errorPrefix) {
 
     context('with minted tokens', function () {
       beforeEach(async function () {
-        await this.token.mint(owner.address, mintSlot, firstTokenId, mintValue);
-        await this.token.mint(owner.address, mintSlot, secondTokenId, mintValue);
+        await this.token.mint(owner.address, firstTokenId, mintSlot, mintValue);
+        await this.token.mint(owner.address, secondTokenId, mintSlot, mintValue);
       });
 
       context('with burnt token', function () {
@@ -593,7 +593,7 @@ function shouldBehaveLikeERC721 (errorPrefix) {
         });
 
         it('emits a Transfer event', function () {
-          expectEvent(this.receipt, 'Transfer', { from: owner.address, to: ZERO_ADDRESS, tokenId: firstTokenId });
+          expectEvent(this.receipt, 'Transfer', { _from: owner.address, _to: ZERO_ADDRESS, _tokenId: firstTokenId });
         });
 
         it('deletes the token', async function () {
@@ -621,8 +621,8 @@ function shouldBehaveLikeERC721Enumerable (errorPrefix, owner, newOwner, approve
   context('with minted tokens', function () {
     beforeEach(async function () {
       [ owner, newOwner, approved, anotherApproved, operator, other ] = await ethers.getSigners();
-      await this.token.mint(owner.address, mintSlot, firstTokenId, mintValue);
-      await this.token.mint(owner.address, mintSlot, secondTokenId, mintValue);
+      await this.token.mint(owner.address, firstTokenId, mintSlot, mintValue);
+      await this.token.mint(owner.address, secondTokenId, mintSlot, mintValue);
       this.toWhom = other;
     });
 
@@ -698,8 +698,8 @@ function shouldBehaveLikeERC721Enumerable (errorPrefix, owner, newOwner, approve
           const anotherNewTokenId = 400;
 
           await this.token.burn(tokenId);
-          await this.token.mint(newOwner.address, mintSlot, newTokenId, mintValue);
-          await this.token.mint(newOwner.address, mintSlot, anotherNewTokenId, mintValue);
+          await this.token.mint(newOwner.address, newTokenId, mintSlot, mintValue);
+          await this.token.mint(newOwner.address, anotherNewTokenId, mintSlot, mintValue);
 
           expect(await this.token.totalSupply()).to.be.equal(3);
 
@@ -718,13 +718,13 @@ function shouldBehaveLikeERC721Enumerable (errorPrefix, owner, newOwner, approve
   describe('_mint(address, uint256)', function () {
     it('reverts with a null destination address', async function () {
       await expect(
-        this.token.mint(ZERO_ADDRESS, mintSlot, firstTokenId, mintValue)
+        this.token.mint(ZERO_ADDRESS, firstTokenId, mintSlot, mintValue)
       ).to.revertedWith('ERC3525: mint to the zero address');
     });
 
     context('with minted token', async function () {
       beforeEach(async function () {
-        const tx = await this.token.mint(owner.address, mintSlot, firstTokenId, mintValue);
+        const tx = await this.token.mint(owner.address, firstTokenId, mintSlot, mintValue);
         this.receipt = await tx.wait();
       });
 
@@ -747,8 +747,8 @@ function shouldBehaveLikeERC721Enumerable (errorPrefix, owner, newOwner, approve
 
     context('with minted tokens', function () {
       beforeEach(async function () {
-        await this.token.mint(owner.address, mintSlot, firstTokenId, mintValue);
-        await this.token.mint(owner.address, mintSlot, secondTokenId, mintValue);
+        await this.token.mint(owner.address, firstTokenId, mintSlot, mintValue);
+        await this.token.mint(owner.address, secondTokenId, mintSlot, mintValue);
       });
 
       context('with burnt token', function () {
@@ -797,7 +797,7 @@ function shouldBehaveLikeERC721Metadata (errorPrefix, name, symbol) {
 
     describe('token URI', function () {
       beforeEach(async function () {
-        await this.token.mint(owner.address, mintSlot, firstTokenId, mintValue);
+        await this.token.mint(owner.address, firstTokenId, mintSlot, mintValue);
       });
 
       it('return empty string by default', async function () {
