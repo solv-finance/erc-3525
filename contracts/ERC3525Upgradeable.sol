@@ -5,13 +5,13 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "./IERC721.sol";
 import "./IERC3525.sol";
+import "./IERC721Receiver.sol";
 import "./IERC3525Receiver.sol";
+import "./extensions/IERC721Enumerable.sol";
+import "./extensions/IERC721Metadata.sol";
 import "./extensions/IERC3525Metadata.sol";
 import "./periphery/interface/IERC3525MetadataDescriptor.sol";
 
@@ -200,7 +200,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         address from_,
         address to_,
         uint256 tokenId_
-    ) public virtual override {
+    ) public payable virtual override {
         require(_isApprovedOrOwner(_msgSender(), tokenId_), "ERC3525: transfer caller is not owner nor approved");
         _transferTokenId(from_, to_, tokenId_);
     }
@@ -210,7 +210,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         address to_,
         uint256 tokenId_,
         bytes memory data_
-    ) public virtual override {
+    ) public payable virtual override {
         require(_isApprovedOrOwner(_msgSender(), tokenId_), "ERC3525: transfer caller is not owner nor approved");
         _safeTransferTokenId(from_, to_, tokenId_, data_);
     }
@@ -219,11 +219,11 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         address from_,
         address to_,
         uint256 tokenId_
-    ) public virtual override {
+    ) public payable virtual override {
         safeTransferFrom(from_, to_, tokenId_, "");
     }
 
-    function approve(address to_, uint256 tokenId_) public virtual override {
+    function approve(address to_, uint256 tokenId_) public payable virtual override {
         address owner = ERC3525Upgradeable.ownerOf(tokenId_);
         require(to_ != owner, "ERC3525: approval to current owner");
 
