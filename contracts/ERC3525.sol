@@ -60,6 +60,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         _decimals = decimals_;
     }
 
+    /// @inheritdoc IERC165
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
         return
             interfaceId == type(IERC165).interfaceId ||
@@ -72,6 +73,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
 
     /**
      * @dev Returns the token collection name.
+     * @inheritdoc IERC721Metadata
      */
     function name() public view virtual override returns (string memory) {
         return _name;
@@ -79,6 +81,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
 
     /**
      * @dev Returns the token collection symbol.
+     * @inheritdoc IERC721Metadata
      */
     function symbol() public view virtual override returns (string memory) {
         return _symbol;
@@ -86,22 +89,26 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
 
     /**
      * @dev Returns the number of decimals the token uses for value.
+     * @inheritdoc IERC3525
      */
     function valueDecimals() public view virtual override returns (uint8) {
         return _decimals;
     }
 
+    /// @inheritdoc IERC3525
     function balanceOf(uint256 tokenId_) public view virtual override returns (uint256) {
         _requireMinted(tokenId_);
         return _allTokens[_allTokensIndex[tokenId_]].balance;
     }
 
+    /// @inheritdoc IERC721
     function ownerOf(uint256 tokenId_) public view virtual override returns (address owner_) {
         _requireMinted(tokenId_);
         owner_ = _allTokens[_allTokensIndex[tokenId_]].owner;
         require(owner_ != address(0), "ERC3525: invalid token ID");
     }
 
+    /// @inheritdoc IERC3525
     function slotOf(uint256 tokenId_) public view virtual override returns (uint256) {
         _requireMinted(tokenId_);
         return _allTokens[_allTokensIndex[tokenId_]].slot;
@@ -111,6 +118,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         return "";
     }
 
+    /// @inheritdoc IERC3525Metadata
     function contractURI() public view virtual override returns (string memory) {
         string memory baseURI = _baseURI();
         return 
@@ -121,6 +129,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
                     "";
     }
 
+    /// @inheritdoc IERC3525Metadata
     function slotURI(uint256 slot_) public view virtual override returns (string memory) {
         string memory baseURI = _baseURI();
         return 
@@ -133,6 +142,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
 
     /**
      * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
+     * @inheritdoc IERC721Metadata
      */
     function tokenURI(uint256 tokenId_) public view virtual override returns (string memory) {
         _requireMinted(tokenId_);
@@ -145,6 +155,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
                     "";
     }
 
+    /// @inheritdoc IERC3525
     function approve(uint256 tokenId_, address to_, uint256 value_) public payable virtual override {
         address owner = ERC3525.ownerOf(tokenId_);
         require(to_ != owner, "ERC3525: approval to current owner");
@@ -157,11 +168,13 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         _approveValue(tokenId_, to_, value_);
     }
 
+    /// @inheritdoc IERC3525
     function allowance(uint256 tokenId_, address operator_) public view virtual override returns (uint256) {
         _requireMinted(tokenId_);
         return _approvedValues[tokenId_][operator_];
     }
 
+    /// @inheritdoc IERC3525
     function transferFrom(
         uint256 fromTokenId_,
         address to_,
@@ -176,6 +189,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         return newTokenId;
     }
 
+    /// @inheritdoc IERC3525
     function transferFrom(
         uint256 fromTokenId_,
         uint256 toTokenId_,
@@ -185,11 +199,13 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         _transferValue(fromTokenId_, toTokenId_, value_);
     }
 
+    /// @inheritdoc IERC721
     function balanceOf(address owner_) public view virtual override returns (uint256 balance) {
         require(owner_ != address(0), "ERC3525: balance query for the zero address");
         return _addressData[owner_].ownedTokens.length;
     }
 
+    /// @inheritdoc IERC721
     function transferFrom(
         address from_,
         address to_,
@@ -199,6 +215,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         _transferTokenId(from_, to_, tokenId_);
     }
 
+    /// @inheritdoc IERC721
     function safeTransferFrom(
         address from_,
         address to_,
@@ -209,6 +226,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         _safeTransferTokenId(from_, to_, tokenId_, data_);
     }
 
+    /// @inheritdoc IERC721
     function safeTransferFrom(
         address from_,
         address to_,
@@ -217,6 +235,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         safeTransferFrom(from_, to_, tokenId_, "");
     }
 
+    /// @inheritdoc IERC721
     function approve(address to_, uint256 tokenId_) public payable virtual override {
         address owner = ERC3525.ownerOf(tokenId_);
         require(to_ != owner, "ERC3525: approval to current owner");
@@ -229,28 +248,34 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         _approve(to_, tokenId_);
     }
 
+    /// @inheritdoc IERC721
     function getApproved(uint256 tokenId_) public view virtual override returns (address) {
         _requireMinted(tokenId_);
         return _allTokens[_allTokensIndex[tokenId_]].approved;
     }
 
+    /// @inheritdoc IERC721
     function setApprovalForAll(address operator_, bool approved_) public virtual override {
         _setApprovalForAll(_msgSender(), operator_, approved_);
     }
 
+    /// @inheritdoc IERC721
     function isApprovedForAll(address owner_, address operator_) public view virtual override returns (bool) {
         return _addressData[owner_].approvals[operator_];
     }
 
+    /// @inheritdoc IERC721Enumerable
     function totalSupply() public view virtual override returns (uint256) {
         return _allTokens.length;
     }
 
+    /// @inheritdoc IERC721Enumerable
     function tokenByIndex(uint256 index_) public view virtual override returns (uint256) {
         require(index_ < ERC3525.totalSupply(), "ERC3525: global index out of bounds");
         return _allTokens[index_].id;
     }
 
+    /// @inheritdoc IERC721Enumerable
     function tokenOfOwnerByIndex(address owner_, uint256 index_) public view virtual override returns (uint256) {
         require(index_ < ERC3525.balanceOf(owner_), "ERC3525: owner index out of bounds");
         return _addressData[owner_].ownedTokens[index_];
