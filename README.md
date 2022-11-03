@@ -10,7 +10,7 @@ Ruquirements:
 
 ### Setup
 
-Run `npm isntall` in the root directory
+Run `npm install` in the root directory
 
 ## Unit Tests
 
