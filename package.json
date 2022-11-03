@@ -1,7 +1,7 @@
 {
-  "name": "@solv/erc-3525",
+  "name": "@solvprotocol/erc-3525",
   "version": "1.0.0",
-  "description": "ERC-3525 Reference Implementation",
+  "description": "ERC-3525 Reference Implementation for Solidity",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -20,8 +20,23 @@
     "coverage": "env COVERAGE=true hardhat coverage",
     "clean": "hardhat clean && rimraf build contracts/build",
     "gas-report": "env ENABLE_GAS_REPORT=true npm run test",
-    "event-trace": "env EVENT_TRACE=true hardhat test --trace"
+    "event-trace": "env EVENT_TRACE=true hardhat test --trace",
+    "pack": "scripts/pack.sh"
   },
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "erc-3525",
+    "erc3525",
+    "solv"
+  ],
+  "author": "Solv Protocol <>",
+  "bugs": {
+    "url": "https://github.com/solv-finance/erc-3525/issues"
+  },
+  "homepage": "https://solv.finance/",
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.3",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.4",

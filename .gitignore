@@ -9,3 +9,4 @@ cache
 artifacts
 .idea/
 typechain-types
+build/
