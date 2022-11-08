@@ -24,16 +24,19 @@ contract ERC3525SlotEnumerable is Context, ERC3525, IERC3525SlotEnumerable {
         // solhint-disable-previous-line no-empty-blocks
     }
 
+    /// @inheritdoc IERC165
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525) returns (bool) {
         return
             interfaceId == type(IERC3525SlotEnumerable).interfaceId ||
             super.supportsInterface(interfaceId);
     }
 
+    /// @inheritdoc IERC3525SlotEnumerable
     function slotCount() public view virtual override returns (uint256) {
         return _allSlots.length;
     }
 
+    /// @inheritdoc IERC3525SlotEnumerable
     function slotByIndex(uint256 index_) public view virtual override returns (uint256) {
         require(index_ < ERC3525SlotEnumerable.slotCount(), "ERC3525SlotEnumerable: slot index out of bounds");
         return _allSlots[index_].slot;
@@ -43,6 +46,7 @@ contract ERC3525SlotEnumerable is Context, ERC3525, IERC3525SlotEnumerable {
         return _allSlots.length != 0 && _allSlots[_allSlotsIndex[slot_]].slot == slot_;
     }
 
+    /// @inheritdoc IERC3525SlotEnumerable
     function tokenSupplyInSlot(uint256 slot_) public view virtual override returns (uint256) {
         if (!_slotExists(slot_)) {
             return 0;
@@ -50,6 +54,7 @@ contract ERC3525SlotEnumerable is Context, ERC3525, IERC3525SlotEnumerable {
         return _allSlots[_allSlotsIndex[slot_]].slotTokens.length;
     }
 
+    /// @inheritdoc IERC3525SlotEnumerable
     function tokenInSlotByIndex(uint256 slot_, uint256 index_) public view virtual override returns (uint256) {
         require(index_ < ERC3525SlotEnumerable.tokenSupplyInSlot(slot_), "ERC3525SlotEnumerable: slot token index out of bounds");
         return _allSlots[_allSlotsIndex[slot_]].slotTokens[index_];
