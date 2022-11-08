@@ -4,7 +4,7 @@
 
 This is work-in-progress implementation of [ERC-3525](https://eips.ethereum.org/EIPS/eip-3525)
 
-Ruquirements:
+Requirements:
 
 - Solidity 0.8
 
