@@ -15,12 +15,14 @@ contract ERC3525SlotApprovable is Context, ERC3525SlotEnumerable, IERC3525SlotAp
         // solhint-disable-previous-line no-empty-blocks
     }
 
+    /// @inheritdoc IERC165
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525SlotEnumerable) returns (bool) {
         return
             interfaceId == type(IERC3525SlotApprovable).interfaceId ||
             super.supportsInterface(interfaceId);
     }
 
+    /// @inheritdoc IERC3525SlotApprovable
     function setApprovalForSlot(
         address owner_,
         uint256 slot_,
@@ -31,6 +33,7 @@ contract ERC3525SlotApprovable is Context, ERC3525SlotEnumerable, IERC3525SlotAp
         _setApprovalForSlot(owner_, slot_, operator_, approved_);
     }
 
+    /// @inheritdoc IERC3525SlotApprovable
     function isApprovedForSlot(
         address owner_,
         uint256 slot_,
@@ -39,6 +42,7 @@ contract ERC3525SlotApprovable is Context, ERC3525SlotEnumerable, IERC3525SlotAp
         return _slotApprovals[owner_][slot_][operator_];
     }
 
+    /// @inheritdoc IERC721
     function approve(address to_, uint256 tokenId_) public payable virtual override(IERC721, ERC3525) {
         address owner = ERC3525.ownerOf(tokenId_);
         uint256 slot = ERC3525.slotOf(tokenId_);
@@ -54,6 +58,7 @@ contract ERC3525SlotApprovable is Context, ERC3525SlotEnumerable, IERC3525SlotAp
         _approve(to_, tokenId_);
     }
 
+    /// @inheritdoc IERC3525
     function approve(uint256 tokenId_, address to_, uint256 value_) public payable virtual override(IERC3525, ERC3525) {
         address owner = ERC3525.ownerOf(tokenId_);
         uint256 slot = ERC3525.slotOf(tokenId_);
@@ -91,10 +96,4 @@ contract ERC3525SlotApprovable is Context, ERC3525SlotEnumerable, IERC3525SlotAp
             ERC3525SlotApprovable.isApprovedForSlot(owner, slot, operator_)
         );
     }
-
-    /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
-     * variables without shifting down storage in the inheritance chain.
-     */
-    uint256[49] private __gap;
 }
