@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
-
 import "@openzeppelin/contracts/utils/Context.sol";
 import "./ERC3525.sol";
 import "./extensions/IERC3525SlotEnumerable.sol";
 
-abstract contract ERC3525SlotEnumerable is Context, ERC3525, IERC3525SlotEnumerable {
+contract ERC3525SlotEnumerable is Context, ERC3525, IERC3525SlotEnumerable {
 
     struct SlotData {
         uint256 slot;
@@ -21,11 +20,9 @@ abstract contract ERC3525SlotEnumerable is Context, ERC3525, IERC3525SlotEnumera
     // slot => index
     mapping(uint256 => uint256) private _allSlotsIndex;
 
-    // function __ERC3525SlotEnumerable_init() internal onlyInitializing{
-    // }
-
-    // function __ERC3525SlotEnumerable_init_unchained() internal onlyInitializing {
-    // }
+    constructor(string memory name_, string memory symbol_, uint8 decimals_) ERC3525(name_, symbol_, decimals_)  {
+        // solhint-disable-previous-line no-empty-blocks
+    }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525) returns (bool) {
         return
