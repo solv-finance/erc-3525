@@ -2,6 +2,7 @@
 
 current_dir=$(pwd)
 yarn hardhat compile --force
+rm -rf build
 mkdir -p build build/contracts build/contracts/build
 cd artifacts/contracts
 find . -name "*.json" -exec cp {} ${current_dir}/build/contracts/build \;
