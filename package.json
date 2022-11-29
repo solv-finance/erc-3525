@@ -42,6 +42,7 @@
     "@nomicfoundation/hardhat-network-helpers": "^1.0.4",
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
     "@openzeppelin/test-helpers": "^0.5.16",
+    "@openzeppelin/upgrade-safe-transpiler": "^0.3.19",
     "dotenv": "^16.0.1",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
