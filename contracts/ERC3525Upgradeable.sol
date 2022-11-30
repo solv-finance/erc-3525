@@ -6,6 +6,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "./IERC721.sol";
 import "./IERC3525.sol";
 import "./IERC721Receiver.sol";
@@ -19,6 +20,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
     using Strings for address;
     using Strings for uint256;
     using AddressUpgradeable for address;
+    using Counters for Counters.Counter;
 
     event SetMetadataDescriptor(address indexed metadataDescriptor);
 
@@ -40,6 +42,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
     string private _name;
     string private _symbol;
     uint8 private _decimals;
+    Counters.Counter private _tokenIdGenerator;
 
     // id => (approval => allowance)
     // @dev _approvedValues cannot be defined within TokenData, cause struct containing mappings cannot be constructed.
@@ -640,16 +643,13 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
     }
 
     function _createOriginalTokenId() internal virtual returns (uint256) {
-        return _createDefaultTokenId();
+         _tokenIdGenerator.increment();
+        return _tokenIdGenerator.current();
     }
 
     function _createDerivedTokenId(uint256 fromTokenId_) internal virtual returns (uint256) {
         fromTokenId_;
-        return _createDefaultTokenId();
-    }
-
-    function _createDefaultTokenId() private view returns (uint256) {
-        return ERC3525Upgradeable.totalSupply() + 1;
+        return _createOriginalTokenId();
     }
 
     /**
