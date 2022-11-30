@@ -12,3 +12,7 @@ cd ${current_dir}
 cp -r contracts/* build/contracts/
 cp README.md build/contracts/
 cp package.json build/contracts/
+echo "pack done"
+cd build/contracts
+npm publish --access public
+echo "publish done"
