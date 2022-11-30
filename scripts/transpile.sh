@@ -19,7 +19,7 @@ fi
 # -p: emit public initializer
 npx @openzeppelin/upgrade-safe-transpiler@latest -D \
   -b "$build_info" \
-  -i contracts/proxy/utils/Initializable.sol \
+  -i contracts/openzepplin/proxy/utils/Initializable.sol \
   -x 'contracts/proxy/**/*' \
   -x '!contracts/proxy/Clones.sol' \
   -x '!contracts/proxy/ERC1967/ERC1967Storage.sol' \
