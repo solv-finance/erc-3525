@@ -2,25 +2,26 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "./IERC721.sol";
-import "./IERC3525.sol";
-import "./IERC721Receiver.sol";
-import "./IERC3525Receiver.sol";
-import "./extensions/IERC721Enumerable.sol";
-import "./extensions/IERC721Metadata.sol";
-import "./extensions/IERC3525Metadata.sol";
-import "./periphery/interface/IERC3525MetadataDescriptor.sol";
+import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+import "./IERC721Upgradeable.sol";
+import "./IERC3525Upgradeable.sol";
+import "./IERC721ReceiverUpgradeable.sol";
+import "./IERC3525ReceiverUpgradeable.sol";
+import "./extensions/IERC721EnumerableUpgradeable.sol";
+import "./extensions/IERC721MetadataUpgradeable.sol";
+import "./extensions/IERC3525MetadataUpgradeable.sol";
+import "./periphery/interface/IERC3525MetadataDescriptorUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metadata, IERC721Enumerable {
-    using Strings for address;
-    using Strings for uint256;
+contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525MetadataUpgradeable, IERC721EnumerableUpgradeable {
+    using StringsUpgradeable for address;
+    using StringsUpgradeable for uint256;
     using AddressUpgradeable for address;
-    using Counters for Counters.Counter;
+    using CountersUpgradeable for CountersUpgradeable.Counter;
 
     event SetMetadataDescriptor(address indexed metadataDescriptor);
 
@@ -42,7 +43,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
     string private _name;
     string private _symbol;
     uint8 private _decimals;
-    Counters.Counter private _tokenIdGenerator;
+    CountersUpgradeable.Counter private _tokenIdGenerator;
 
     // id => (approval => allowance)
     // @dev _approvedValues cannot be defined within TokenData, cause struct containing mappings cannot be constructed.
@@ -55,28 +56,26 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
 
     mapping(address => AddressData) private _addressData;
 
-    IERC3525MetadataDescriptor public metadataDescriptor;
+    IERC3525MetadataDescriptorUpgradeable public metadataDescriptor;
 
-    // solhint-disable-next-line
     function __ERC3525_init(string memory name_, string memory symbol_, uint8 decimals_) internal onlyInitializing {
         __ERC3525_init_unchained(name_, symbol_, decimals_);
     }
 
-    // solhint-disable-next-line
     function __ERC3525_init_unchained(string memory name_, string memory symbol_, uint8 decimals_) internal onlyInitializing {
-        _name = name_;
+         _name = name_;
         _symbol = symbol_;
         _decimals = decimals_;
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
         return
-            interfaceId == type(IERC165).interfaceId ||
-            interfaceId == type(IERC3525).interfaceId ||
-            interfaceId == type(IERC721).interfaceId ||
-            interfaceId == type(IERC3525Metadata).interfaceId ||
-            interfaceId == type(IERC721Enumerable).interfaceId || 
-            interfaceId == type(IERC721Metadata).interfaceId;
+            interfaceId == type(IERC165Upgradeable).interfaceId ||
+            interfaceId == type(IERC3525Upgradeable).interfaceId ||
+            interfaceId == type(IERC721Upgradeable).interfaceId ||
+            interfaceId == type(IERC3525MetadataUpgradeable).interfaceId ||
+            interfaceId == type(IERC721EnumerableUpgradeable).interfaceId || 
+            interfaceId == type(IERC721MetadataUpgradeable).interfaceId;
     }
 
     /**
@@ -126,7 +125,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
             address(metadataDescriptor) != address(0) ? 
                 metadataDescriptor.constructContractURI() :
                 bytes(baseURI).length > 0 ? 
-                    string(abi.encodePacked(baseURI, "contract/", Strings.toHexString(address(this)))) : 
+                    string(abi.encodePacked(baseURI, "contract/", StringsUpgradeable.toHexString(address(this)))) : 
                     "";
     }
 
@@ -563,10 +562,10 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         bytes memory data_
     ) private returns (bool) {
         address to = ERC3525Upgradeable.ownerOf(toTokenId_);
-        if (to.isContract() && IERC165(to).supportsInterface(type(IERC3525Receiver).interfaceId)) {
+        if (to.isContract() && IERC165Upgradeable(to).supportsInterface(type(IERC3525ReceiverUpgradeable).interfaceId)) {
             try
-                IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_) returns (bytes4 retval) {
-                return retval == IERC3525Receiver.onERC3525Received.selector;
+                IERC3525ReceiverUpgradeable(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_) returns (bytes4 retval) {
+                return retval == IERC3525ReceiverUpgradeable.onERC3525Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
                     revert( "ERC3525: transfer to non ERC3525Receiver");
@@ -598,10 +597,10 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         uint256 tokenId_,
         bytes memory data_
     ) private returns (bool) {
-        if (to_.isContract() && IERC165(to_).supportsInterface(type(IERC721Receiver).interfaceId)) {
+        if (to_.isContract() && IERC165Upgradeable(to_).supportsInterface(type(IERC721ReceiverUpgradeable).interfaceId)) {
             try 
-                IERC721Receiver(to_).onERC721Received(_msgSender(), from_, tokenId_, data_) returns (bytes4 retval) {
-                return retval == IERC721Receiver.onERC721Received.selector;
+                IERC721ReceiverUpgradeable(to_).onERC721Received(_msgSender(), from_, tokenId_, data_) returns (bytes4 retval) {
+                return retval == IERC721ReceiverUpgradeable.onERC721Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
                     revert("ERC721: transfer to non ERC721Receiver");
@@ -638,7 +637,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
     /* solhint-enable */
 
     function _setMetadataDescriptor(address metadataDescriptor_) internal virtual {
-        metadataDescriptor = IERC3525MetadataDescriptor(metadataDescriptor_);
+        metadataDescriptor = IERC3525MetadataDescriptorUpgradeable(metadataDescriptor_);
         emit SetMetadataDescriptor(metadataDescriptor_);
     }
 
@@ -655,6 +654,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
     /**
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
+     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */
-    uint256[42] private __gap;
+    uint256[51] private __gap;
 }

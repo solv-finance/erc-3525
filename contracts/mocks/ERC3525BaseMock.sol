@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Context.sol";
 import "../ERC3525.sol";
 
-contract ERC3525BaseMockUpgradeable is Context, ERC3525 {
+contract ERC3525BaseMock is Context, ERC3525 {
     constructor(string memory name_, string memory symbol_, uint8 decimals_) ERC3525(name_, symbol_, decimals_) {
     }
 

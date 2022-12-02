@@ -1,6 +1,6 @@
 {
   "name": "@solvprotocol/erc-3525",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "ERC-3525 Reference Implementation for Solidity",
   "license": "MIT",
   "repository": {
@@ -42,7 +42,7 @@
     "@nomicfoundation/hardhat-network-helpers": "^1.0.4",
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
     "@openzeppelin/test-helpers": "^0.5.16",
-    "@openzeppelin/upgrade-safe-transpiler": "^0.3.19",
+    "@solvprotocol/upgrade-safe-transpiler": "^0.3.18",
     "dotenv": "^16.0.1",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
@@ -55,7 +55,8 @@
     "hardhat-contract-sizer": "^2.6.1",
     "hardhat-tracer": "^1.1.0-rc.8",
     "solc": "^0.8.13",
-    "solhint": "^3.3.7"
+    "solhint": "^3.3.7",
+    "solidity-ast": "^0.4.38"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.7.3",

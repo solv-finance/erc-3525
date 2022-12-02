@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+cd contracts
+rm -f *Upgradeable.sol
+find . -name *Upgradeable.sol|xargs rm -f
+rm -f Initializable.sol
+rm -f mocks/WithInit.sol
+cd ..
+
 set -euo pipefail -x
 
 npm run compile
@@ -17,9 +24,9 @@ fi
 # -i: use included Initializable
 # -x: exclude all proxy contracts except Clones library
 # -p: emit public initializer
-npx @openzeppelin/upgrade-safe-transpiler@latest -D \
+#  -i contracts/openzeppelin/proxy/utils/Initializable.sol \
+npx @solvprotocol/upgrade-safe-transpiler@latest \
   -b "$build_info" \
-  -i contracts/openzepplin/proxy/utils/Initializable.sol \
   -x 'contracts/proxy/**/*' \
   -x '!contracts/proxy/Clones.sol' \
   -x '!contracts/proxy/ERC1967/ERC1967Storage.sol' \
@@ -27,3 +34,9 @@ npx @openzeppelin/upgrade-safe-transpiler@latest -D \
   -x '!contracts/proxy/utils/UUPSUpgradeable.sol' \
   -x '!contracts/proxy/beacon/IBeacon.sol' \
   -p 'contracts/**/presets/**/*'
+
+rm -rf @openzeppelin
+rm -f contracts/Initializable.sol
+rm -f contracts/mocks/WithInit.sol
+
+node ./scripts/migrate-imports.js

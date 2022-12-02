@@ -2,14 +2,14 @@ const { shouldBehaveLikeERC721, shouldBehaveLikeERC721Enumerable, shouldBehaveLi
 const { shouldBehaveLikeERC3525, shouldBehaveLikeERC3525Metadata } = require('./ERC3525.behavior');
 
 async function deployERC3525(name, symbol, decimals) {
-  const ERC3525Factory = await ethers.getContractFactory('ERC3525BaseMock');
+  const ERC3525Factory = await ethers.getContractFactory('ERC3525BaseMockUpgradeable');
   const erc3525 = await ERC3525Factory.deploy();
   await erc3525.deployed();
   await erc3525.initialize(name, symbol, decimals);
   return erc3525;
 }
 
-describe('ERC3525', () => {
+describe('ERC3525Upgradeable', () => {
 
   const name = 'Semi Fungible Token';
   const symbol = 'SFT';

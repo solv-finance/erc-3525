@@ -35,6 +35,4 @@ contract ERC3525AllRoundMock is Context, ERC3525SlotApprovable {
         require(_isApprovedOrOwner(_msgSender(), tokenId_), "ERC3525: caller is not token owner nor approved");
         ERC3525._burnValue(tokenId_, burnValue_);
     }
-
-    uint256[50] private __gap;
 }

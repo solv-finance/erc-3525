@@ -2,12 +2,26 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "./ERC3525Upgradeable.sol";
-import "./extensions/IERC3525SlotEnumerable.sol";
+import "./extensions/IERC3525SlotEnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract ERC3525SlotEnumerableUpgradeable is Initializable, ContextUpgradeable, ERC3525Upgradeable, IERC3525SlotEnumerable {
+contract ERC3525SlotEnumerableUpgradeable is Initializable, ContextUpgradeable, ERC3525Upgradeable, IERC3525SlotEnumerableUpgradeable {
+    function __ERC3525SlotEnumerable_init(
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_
+    ) internal onlyInitializing {
+        __ERC3525_init_unchained(name_, symbol_, decimals_);
+    }
+
+    function __ERC3525SlotEnumerable_init_unchained(
+        string memory,
+        string memory,
+        uint8
+    ) internal onlyInitializing {
+    }
 
     struct SlotData {
         uint256 slot;
@@ -22,15 +36,9 @@ contract ERC3525SlotEnumerableUpgradeable is Initializable, ContextUpgradeable, 
     // slot => index
     mapping(uint256 => uint256) private _allSlotsIndex;
 
-    function __ERC3525SlotEnumerable_init() internal onlyInitializing{
-    }
-
-    function __ERC3525SlotEnumerable_init_unchained() internal onlyInitializing {
-    }
-
-    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525Upgradeable) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165Upgradeable, ERC3525Upgradeable) returns (bool) {
         return
-            interfaceId == type(IERC3525SlotEnumerable).interfaceId ||
+            interfaceId == type(IERC3525SlotEnumerableUpgradeable).interfaceId ||
             super.supportsInterface(interfaceId);
     }
 
@@ -141,6 +149,7 @@ contract ERC3525SlotEnumerableUpgradeable is Initializable, ContextUpgradeable, 
     /**
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
+     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */
-    uint256[47] private __gap;
+    uint256[57] private __gap;
 }

@@ -2,21 +2,19 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "../ERC3525SlotApprovableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract ERC3525AllRoundMockUpgradeable is Initializable, ContextUpgradeable, ERC3525SlotApprovableUpgradeable {
 
-    function initialize(string memory name_, string memory symbol_, uint8 decimals_) public virtual initializer {
-        __ERC3525AllRound_init(name_, symbol_, decimals_);
-    }
-
-    function __ERC3525AllRound_init(string memory name_, string memory symbol_, uint8 decimals_) internal onlyInitializing {
+    function __ERC3525AllRoundMock_init(string memory name_, string memory symbol_, uint8 decimals_) internal onlyInitializing {
         __ERC3525_init_unchained(name_, symbol_, decimals_);
+        __ERC3525SlotEnumerable_init_unchained(name_, symbol_, decimals_);
+        __ERC3525SlotApprovable_init_unchained(name_, symbol_, decimals_);
     }
 
-    function __ERC3525AllRound_init_unchained() internal onlyInitializing{
+    function __ERC3525AllRoundMock_init_unchained(string memory, string memory, uint8) internal onlyInitializing {
     }
 
     function mint(
@@ -45,5 +43,10 @@ contract ERC3525AllRoundMockUpgradeable is Initializable, ContextUpgradeable, ER
         ERC3525Upgradeable._burnValue(tokenId_, burnValue_);
     }
 
-    uint256[50] private __gap;
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     * variables without shifting down storage in the inheritance chain.
+     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+     */
+    uint256[60] private __gap;
 }

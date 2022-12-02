@@ -1,4 +1,11 @@
+const fs = require('fs');
+const path = require('path');
+
 require("@nomicfoundation/hardhat-toolbox");
+
+for (const f of fs.readdirSync(path.join(__dirname, 'hardhat'))) {
+  require(path.join(__dirname, 'hardhat', f));
+}
 
 module.exports = {
   solidity: {
@@ -8,6 +15,7 @@ module.exports = {
         enabled: true,
         runs: 200,
       },
+      viaIR: true
     },
   },
   networks: {
