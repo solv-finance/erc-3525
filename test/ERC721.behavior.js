@@ -37,7 +37,6 @@ function shouldBehaveLikeERC721 (errorPrefix) {
       await this.token.mint(owner.address, secondTokenId, mintSlot, mintValue);
       this.toWhom = other;
       this.ERC721ReceiverMockFactory = await ethers.getContractFactory('ERC721ReceiverMock');
-      console.log('ERC721ReceiverMockFactory OK')
     });
 
     describe('balanceOf(address)', function () {
