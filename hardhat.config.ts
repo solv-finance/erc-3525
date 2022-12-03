@@ -20,6 +20,9 @@ module.exports = {
     },
   },
   networks: {
+    localhost: {
+      loggingEnabled: true,
+    },
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
       accounts:

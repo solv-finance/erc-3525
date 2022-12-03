@@ -44,5 +44,5 @@ contract ERC3525MintableUpgradeable is Initializable, ContextUpgradeable, ERC352
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */
-    uint256[60] private __gap;
+    uint256[50] private __gap;
 }

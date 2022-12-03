@@ -2,9 +2,8 @@ const { shouldBehaveLikeERC3525SlotApprovable } = require('./ERC3525.behavior');
 
 async function deployERC3525(name, symbol, decimals) {
   const ERC3525Factory = await ethers.getContractFactory('ERC3525AllRoundMock');
-  const erc3525 = await ERC3525Factory.deploy();
+  const erc3525 = await ERC3525Factory.deploy(name, symbol, decimals);
   await erc3525.deployed();
-  await erc3525.initialize(name, symbol, decimals);
   return erc3525;
 }
 

@@ -25,18 +25,12 @@ fi
 # -x: exclude all proxy contracts except Clones library
 # -p: emit public initializer
 #  -i contracts/openzeppelin/proxy/utils/Initializable.sol \
-npx @solvprotocol/upgrade-safe-transpiler@latest \
+npx @openzeppelin/upgrade-safe-transpiler@latest \
   -b "$build_info" \
-  -x 'contracts/proxy/**/*' \
-  -x '!contracts/proxy/Clones.sol' \
-  -x '!contracts/proxy/ERC1967/ERC1967Storage.sol' \
-  -x '!contracts/proxy/ERC1967/ERC1967Upgrade.sol' \
-  -x '!contracts/proxy/utils/UUPSUpgradeable.sol' \
-  -x '!contracts/proxy/beacon/IBeacon.sol' \
-  -p 'contracts/**/presets/**/*'
+  -x 'contracts/mocks/ERC721ReceiverMock.sol' \
+  -x 'contracts/mocks/ERC3525ReceiverMock.sol'
 
 rm -rf @openzeppelin
 rm -f contracts/Initializable.sol
-rm -f contracts/mocks/WithInit.sol
 
 node ./scripts/migrate-imports.js
