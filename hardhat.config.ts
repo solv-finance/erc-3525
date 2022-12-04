@@ -4,9 +4,9 @@ const path = require('path');
 require("@nomicfoundation/hardhat-toolbox");
 require('hardhat-contract-sizer');
 
-/* for (const f of fs.readdirSync(path.join(__dirname, 'hardhat'))) {
+for (const f of fs.readdirSync(path.join(__dirname, 'hardhat'))) {
   require(path.join(__dirname, 'hardhat', f));
-} */
+}
 
 module.exports = {
   solidity: {

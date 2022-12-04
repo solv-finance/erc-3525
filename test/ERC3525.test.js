@@ -23,5 +23,5 @@ describe('ERC3525', () => {
   shouldBehaveLikeERC721Metadata('ERC721Metadata', name, symbol);
   shouldBehaveLikeERC3525('ERC3525');
   shouldBehaveLikeERC3525Metadata('ERC3525Metadata');
-
+  
 })

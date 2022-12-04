@@ -69,8 +69,6 @@ async function updateFile (file, update) {
 
 function updateImportPaths (source) {
   for (const filePath of pathUpdates) {
-    console.log(`old path: ${path.join('@openzeppelin/contracts/', filePath)}`);
-    console.log(`new path: ${path.join('@openzeppelin/contracts-upgradeable/', filePath)}`);
     source = source.replace(
       path.join('@openzeppelin/contracts/', filePath),
       path.join('@openzeppelin/contracts-upgradeable/', filePath),
