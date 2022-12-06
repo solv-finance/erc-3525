@@ -1,6 +1,6 @@
 {
   "name": "@solvprotocol/erc-3525",
-  "version": "2.0.0-beta",
+  "version": "1.1.0-beta",
   "description": "ERC-3525 Reference Implementation for Solidity",
   "license": "MIT",
   "repository": {
@@ -21,7 +21,7 @@
     "clean": "hardhat clean && rimraf build contracts/build",
     "gas-report": "env ENABLE_GAS_REPORT=true npm run test",
     "event-trace": "env EVENT_TRACE=true hardhat test --trace",
-    "pack": "scripts/pack.sh"
+    "release": "scripts/release.sh"
   },
   "keywords": [
     "solidity",
@@ -32,7 +32,7 @@
     "erc3525",
     "solv"
   ],
-  "author": "Solv Protocol <>",
+  "author": "Solv Protocol",
   "bugs": {
     "url": "https://github.com/solv-finance/erc-3525/issues"
   },
