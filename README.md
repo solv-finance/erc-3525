@@ -17,11 +17,13 @@
 ## Overview
 
 ### Installation
+
 ```bash
 npm install @solvprotocol/erc-3525@latest
 ```
 
 ### Usage
+Once installed, you can use the contracts in the library by importing them:
 
 ```solidity
 pragma solidity ^0.8.9;
@@ -35,6 +37,8 @@ constructor()
     }
 }
 ```
+
+To keep your system secure, you should always use the installed code as-is, and neither copy-paste it from online sources nor modify it yourself.
 
 ## Learn More
 
