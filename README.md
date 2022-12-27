@@ -2,17 +2,17 @@
 
 **This is reference implementation of [ERC-3525](https://eips.ethereum.org/EIPS/eip-3525).** 
 
-ERC-3525, proposed by Solv Protocol, is a standard for the Semi-Fungible Token (or SFT) approved by the Ethereum community.
+>ERC-3525, proposed by Solv Protocol, is a standard for the Semi-Fungible Token (or SFT) approved by the Ethereum community.
+>
+>It defines a new type of digital asset characterized by the following key features:
+>
+>* Unique ID and expressivity of ERC-721 non-fungible tokens. Compatibility with the ERC-721 token standard.
+>* It is fractionalizable, combinable, and computable.
+>* It can work like an account and nest other digital assets, including ERC-20 fungible tokens and NFTs, with support for token-to-token transfer.
+>* Programmable appearance, functionality, lockup, transfer, etc. Metadata is optimized to support dynamic inputs and more complex financial logic.
 
-It defines a new type of digital asset characterized by the following key features:
 
-* Unique ID and expressivity of ERC-721 non-fungible tokens. Compatibility with the ERC-721 token standard.
-* It is fractionalizable, combinable, and computable.
-* It can work like an account and nest other digital assets, including ERC-20 fungible tokens and NFTs, with support for token-to-token transfer.
-* Programmable appearance, functionality, lockup, transfer, etc. Metadata is optimized to support dynamic inputs and more complex financial logic.
-
-
-🧙**Not sure how to get started?** Check out [he ERC-3525 Starter Kit: Developer Edition](https://medium.com/solv-blog/erc-3525-starter-kit-developer-edition-9d734ca62bd0) - a step-by-step guide to get you started with the ERC-3525 reference implementation.🚀
+🧙**Not sure how to get started?** Check out [ERC-3525 Starter Kit: Developer Edition](https://medium.com/solv-blog/erc-3525-starter-kit-developer-edition-9d734ca62bd0) - a step-by-step guide to get you started with the ERC-3525 reference implementation.🚀
 
 ## Overview
 
@@ -48,15 +48,15 @@ constructor()
 - Hardhat
 - Node.js >= 12.10
 
-### Setup
+#### Setup
 
 Run `npm install` in the root directory
 
-## Unit Tests
+#### Unit Tests
 
 Run `npm test` to run the unit tests
 
-## Transpile
+#### Transpile
 Run `npm run transpile` to transpile the non-upgradable contracts to upgradeable contracts
 
 ## License
