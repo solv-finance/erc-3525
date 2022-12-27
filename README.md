@@ -62,5 +62,5 @@ Run `npm run transpile` to transpile the non-upgradable contracts to upgradeable
 ## License
 ERC-3525 Reference Implementation is released under the [MIT License](https://github.com/solv-finance/erc-3525/blob/main/LICENSE).
 
-
-**ERC-3525 Reference Implementation** power by **[Solv Finance](https://solv.finance)**
+## Credits
+ERC-3525 Reference Implementation power by **[Solv Finance](https://solv.finance)**
