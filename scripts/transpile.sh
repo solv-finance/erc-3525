@@ -29,3 +29,5 @@ rm -rf @openzeppelin
 rm -f contracts/Initializable.sol
 
 node ./scripts/migrate-imports.js
+sed 's/\.\.\/\.\.\/@openzeppelin\/contracts/@openzeppelin\/contracts-upgradeable/g' contracts/mocks/WithInit.sol > contracts/mocks/ERC3525BaseMockUpgradeableWithInit.sol
+rm -f contracts/mocks/WithInit.sol

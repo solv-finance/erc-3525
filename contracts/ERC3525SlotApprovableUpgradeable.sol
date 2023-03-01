@@ -59,21 +59,6 @@ contract ERC3525SlotApprovableUpgradeable is Initializable, ContextUpgradeable, 
         _approve(to_, tokenId_);
     }
 
-    function approve(uint256 tokenId_, address to_, uint256 value_) public payable virtual override(IERC3525Upgradeable, ERC3525Upgradeable) {
-        address owner = ERC3525Upgradeable.ownerOf(tokenId_);
-        uint256 slot = ERC3525Upgradeable.slotOf(tokenId_);
-        require(to_ != owner, "ERC3525: approval to current owner");
-
-        require(
-            _msgSender() == owner || 
-            ERC3525Upgradeable.isApprovedForAll(owner, _msgSender()) ||
-            ERC3525SlotApprovableUpgradeable.isApprovedForSlot(owner, slot, _msgSender()),
-            "ERC3525: approve caller is not owner nor approved for all/slot"
-        );
-        
-        _approveValue(tokenId_, to_, value_);
-    }
-
     function _setApprovalForSlot(
         address owner_,
         uint256 slot_,

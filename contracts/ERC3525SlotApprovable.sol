@@ -53,21 +53,6 @@ contract ERC3525SlotApprovable is Context, ERC3525SlotEnumerable, IERC3525SlotAp
         _approve(to_, tokenId_);
     }
 
-    function approve(uint256 tokenId_, address to_, uint256 value_) public payable virtual override(IERC3525, ERC3525) {
-        address owner = ERC3525.ownerOf(tokenId_);
-        uint256 slot = ERC3525.slotOf(tokenId_);
-        require(to_ != owner, "ERC3525: approval to current owner");
-
-        require(
-            _msgSender() == owner || 
-            ERC3525.isApprovedForAll(owner, _msgSender()) ||
-            ERC3525SlotApprovable.isApprovedForSlot(owner, slot, _msgSender()),
-            "ERC3525: approve caller is not owner nor approved for all/slot"
-        );
-        
-        _approveValue(tokenId_, to_, value_);
-    }
-
     function _setApprovalForSlot(
         address owner_,
         uint256 slot_,

@@ -655,16 +655,15 @@ function shouldBehaveLikeERC3525 (errorPrefix) {
         it('reverts', async function () {
           await expect(
             this.token.connect(other)['approve(uint256,address,uint256)'](firstTokenId, valueApproved.address, this.allowance)
-          ).to.revertedWith('ERC3525: approve caller is not owner nor approved for all');
+          ).to.revertedWith('ERC3525: approve caller is not owner nor approved');
         });
       });
 
       context('when the sender is approved for the given token ID', function () {
-        it('reverts', async function () {
+        it('approve value by token ID approved address', async function () {
           await this.token.connect(firstOwner)['approve(address,uint256)'](approved.address, firstTokenId);
-          await expect(
-            this.token.connect(approved)['approve(uint256,address,uint256)'](firstTokenId, valueApproved.address, this.allowance)
-          ).to.revertedWith('ERC3525: approve caller is not owner nor approved for all');
+          await this.token.connect(approved)['approve(uint256,address,uint256)'](firstTokenId, valueApproved.address, this.allowance);
+          expect(await this.token.allowance(firstTokenId, valueApproved.address)).to.be.equal(this.allowance);
         });
       });
 
@@ -1119,13 +1118,13 @@ function shouldBehaveLikeERC3525SlotApprovable (errorPrefix) {
           it('reverts when approving others values in the same slot', async function () {
             await expect(
               this.token.connect(slotOperator)['approve(uint256,address,uint256)'](secondTokenId, valueApproved.address, 10)
-            ).to.revertedWith('ERC3525: approve caller is not owner nor approved for all/slot');
+            ).to.revertedWith('ERC3525: approve caller is not owner nor approved');
           });
 
           it('reverts when approving owners values in other slot', async function () {
             await expect(
               this.token.connect(slotOperator)['approve(uint256,address,uint256)'](thirdTokenId, valueApproved.address, 10)
-            ).to.revertedWith('ERC3525: approve caller is not owner nor approved for all/slot');
+            ).to.revertedWith('ERC3525: approve caller is not owner nor approved');
           });
         });
 
@@ -1208,7 +1207,7 @@ function shouldBehaveLikeERC3525SlotApprovable (errorPrefix) {
         it('reverts when approving values of the owner in the unapproved slot', async function () {
           await expect(
             this.token.connect(slotOperator)['approve(uint256,address,uint256)'](firstTokenId, approved.address, 100)
-          ).to.revertedWith('ERC3525: approve caller is not owner nor approved for all/slot');
+          ).to.revertedWith('ERC3525: approve caller is not owner nor approved');
         });
 
         it('reverts when transferring tokens of the owner in the unapproved slot', async function () {

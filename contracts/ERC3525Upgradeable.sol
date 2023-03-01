@@ -157,10 +157,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         address owner = ERC3525Upgradeable.ownerOf(tokenId_);
         require(to_ != owner, "ERC3525: approval to current owner");
 
-        require(
-            _msgSender() == owner || ERC3525Upgradeable.isApprovedForAll(owner, _msgSender()),
-            "ERC3525: approve caller is not owner nor approved for all"
-        );
+        require(_isApprovedOrOwner(_msgSender(), tokenId_), "ERC3525: approve caller is not owner nor approved");
 
         _approveValue(tokenId_, to_, value_);
     }

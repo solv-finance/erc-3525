@@ -152,10 +152,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         address owner = ERC3525.ownerOf(tokenId_);
         require(to_ != owner, "ERC3525: approval to current owner");
 
-        require(
-            _msgSender() == owner || ERC3525.isApprovedForAll(owner, _msgSender()),
-            "ERC3525: approve caller is not owner nor approved for all"
-        );
+        require(_isApprovedOrOwner(_msgSender(), tokenId_), "ERC3525: approve caller is not owner nor approved");
 
         _approveValue(tokenId_, to_, value_);
     }
