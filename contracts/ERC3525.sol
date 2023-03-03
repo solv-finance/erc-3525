@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Context.sol";
-import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
+import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -166,14 +166,12 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         uint256 fromTokenId_,
         address to_,
         uint256 value_
-    ) public payable virtual override returns (uint256) {
+    ) public payable virtual override returns (uint256 newTokenId) {
         _spendAllowance(_msgSender(), fromTokenId_, value_);
 
-        uint256 newTokenId = _createDerivedTokenId(fromTokenId_);
+        newTokenId = _createDerivedTokenId(fromTokenId_);
         _mint(to_, newTokenId, ERC3525.slotOf(fromTokenId_), 0);
         _transferValue(fromTokenId_, newTokenId, value_);
-
-        return newTokenId;
     }
 
     function transferFrom(
@@ -269,7 +267,6 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     }
 
     function _isApprovedOrOwner(address operator_, uint256 tokenId_) internal view virtual returns (bool) {
-        _requireMinted(tokenId_);
         address owner = ERC3525.ownerOf(tokenId_);
         return (
             operator_ == owner ||
@@ -294,10 +291,9 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         require(_exists(tokenId_), "ERC3525: invalid token ID");
     }
 
-    function _mint(address to_, uint256 slot_, uint256 value_) internal virtual returns (uint256) {
-        uint256 tokenId = _createOriginalTokenId();
+    function _mint(address to_, uint256 slot_, uint256 value_) internal virtual returns (uint256 tokenId) {
+        tokenId = _createOriginalTokenId();
         _mint(to_, tokenId, slot_, value_);  
-        return tokenId;
     }
 
     function _mint(address to_, uint256 tokenId_, uint256 slot_, uint256 value_) internal virtual {
@@ -312,8 +308,6 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     }
 
     function _mintValue(uint256 tokenId_, uint256 value_) internal virtual {
-        _requireMinted(tokenId_);
-
         address owner = ERC3525.ownerOf(tokenId_);
         uint256 slot = ERC3525.slotOf(tokenId_);
         _beforeValueTransfer(address(0), owner, 0, tokenId_, slot, value_);
@@ -455,6 +449,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
             address approval = tokenData.valueApprovals[i];
             delete _approvedValues[tokenId_][approval];
         }
+        delete tokenData.valueApprovals;
     }
 
     function _existApproveValue(address to_, uint256 tokenId_) internal view virtual returns (bool) {
@@ -506,7 +501,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
 
         require(
             _checkOnERC3525Received(fromTokenId_, toTokenId_, value_, ""),
-            "ERC3525: transfer to non ERC3525Receiver"
+            "ERC3525: transfer rejected by ERC3525Receiver"
         );
     }
 
@@ -555,19 +550,8 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     ) private returns (bool) {
         address to = ERC3525.ownerOf(toTokenId_);
         if (to.isContract() && IERC165(to).supportsInterface(type(IERC3525Receiver).interfaceId)) {
-            try
-                IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_) returns (bytes4 retval) {
-                return retval == IERC3525Receiver.onERC3525Received.selector;
-            } catch (bytes memory reason) {
-                if (reason.length == 0) {
-                    revert( "ERC3525: transfer to non ERC3525Receiver");
-                } else {
-                    // solhint-disable-next-line
-                    assembly {
-                        revert(add(32, reason), mload(reason))
-                    }
-                }
-            }
+            bytes4 retval = IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_);
+            return retval == IERC3525Receiver.onERC3525Received.selector;
         } else {
             return true;
         }
@@ -589,15 +573,15 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         uint256 tokenId_,
         bytes memory data_
     ) private returns (bool) {
-        if (to_.isContract() && IERC165(to_).supportsInterface(type(IERC721Receiver).interfaceId)) {
+        if (to_.isContract()) {
             try 
                 IERC721Receiver(to_).onERC721Received(_msgSender(), from_, tokenId_, data_) returns (bytes4 retval) {
                 return retval == IERC721Receiver.onERC721Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
-                    revert("ERC721: transfer to non ERC721Receiver");
+                    revert("ERC721: transfer to non ERC721Receiver implementer");
                 } else {
-                    // solhint-disable-next-line
+                    /// @solidity memory-safe-assembly
                     assembly {
                         revert(add(32, reason), mload(reason))
                     }

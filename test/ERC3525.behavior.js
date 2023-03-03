@@ -300,7 +300,7 @@ function shouldBehaveLikeERC3525 (errorPrefix) {
           await deployReceiverAndMint.call(this, '0x12345678', Error.None);
           await expect(
             this.token.connect(this.fromOwner)['transferFrom(uint256,uint256,uint256)'](this.fromTokenId, this.toTokenId, transferValue)
-          ).to.revertedWith('ERC3525: transfer to non ERC3525Receiver');
+          ).to.revertedWith('ERC3525: transfer rejected by ERC3525Receiver');
         });
       });
 
@@ -318,7 +318,7 @@ function shouldBehaveLikeERC3525 (errorPrefix) {
           await deployReceiverAndMint.call(this, RECEIVER_MAGIC_VALUE, Error.RevertWithoutMessage);
           await expect(
             this.token.connect(this.fromOwner)['transferFrom(uint256,uint256,uint256)'](this.fromTokenId, this.toTokenId, transferValue)
-          ).to.revertedWith('ERC3525: transfer to non ERC3525Receiver');
+          ).to.reverted;
         });
       });
 
@@ -523,7 +523,7 @@ function shouldBehaveLikeERC3525 (errorPrefix) {
           this.toOwner = await this.ERC3525ReceiverMockFactory.deploy('0x12345678', Error.None);
           await expect(
             this.token.connect(this.fromOwner)['transferFrom(uint256,address,uint256)'](this.fromTokenId, this.toOwner.address, transferValue)
-          ).to.revertedWith('ERC3525: transfer to non ERC3525Receiver');
+          ).to.revertedWith('ERC3525: transfer rejected by ERC3525Receiver');
         });
       });
 
@@ -541,7 +541,7 @@ function shouldBehaveLikeERC3525 (errorPrefix) {
           this.toOwner = await this.ERC3525ReceiverMockFactory.deploy(RECEIVER_MAGIC_VALUE, Error.RevertWithoutMessage);
           await expect(
             this.token.connect(this.fromOwner)['transferFrom(uint256,address,uint256)'](this.fromTokenId, this.toOwner.address, transferValue)
-          ).to.revertedWith('ERC3525: transfer to non ERC3525Receiver');
+          ).to.reverted;
         });
       });
 

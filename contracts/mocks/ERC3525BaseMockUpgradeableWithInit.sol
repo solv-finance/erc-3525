@@ -9,13 +9,6 @@ contract ContextUpgradeableWithInit is ContextUpgradeable {
         __Context_init();
     }
 }
-import "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol";
-
-contract ERC165UpgradeableWithInit is ERC165Upgradeable {
-    constructor() payable initializer {
-        __ERC165_init();
-    }
-}
 import "../ERC3525Upgradeable.sol";
 
 contract ERC3525UpgradeableWithInit is ERC3525Upgradeable {

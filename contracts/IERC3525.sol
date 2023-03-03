@@ -8,7 +8,7 @@ import "./IERC721.sol";
 /**
  * @title ERC-3525 Semi-Fungible Token Standard
  * @dev See https://eips.ethereum.org/EIPS/eip-3525
- * Note: the ERC-165 identifier for this interface is 0xc97ae3d5.
+ * Note: the ERC-165 identifier for this interface is 0xd5358140.
  */
 interface IERC3525 is IERC165, IERC721 {
     /**

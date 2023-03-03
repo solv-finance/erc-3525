@@ -284,7 +284,7 @@ function shouldBehaveLikeERC721 (errorPrefix) {
             const revertingReceiver = await this.ERC721ReceiverMockFactory.deploy(RECEIVER_MAGIC_VALUE, Error.RevertWithoutMessage);
             await expect(
               this.token['safeTransferFrom(address,address,uint256)'](owner.address, revertingReceiver.address, tokenId)
-            ).to.revertedWith('ERC721: transfer to non ERC721Receiver');
+            ).to.revertedWith('ERC721: transfer to non ERC721Receiver implementer');
           });
         });
 
