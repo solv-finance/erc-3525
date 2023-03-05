@@ -243,14 +243,6 @@ function shouldBehaveLikeERC721 (errorPrefix) {
 
             shouldTransferTokensByUsers(transferFun);
           });
-
-          describe('to a non-receiver contract', function () {
-            beforeEach(async function () {
-              this.toWhom = this.token;
-            });
-
-            shouldTransferTokensByUsers(transferFun);
-          });
         };
 
         describe('with data', function () {
@@ -259,6 +251,14 @@ function shouldBehaveLikeERC721 (errorPrefix) {
 
         describe('without data', function () {
           shouldTransferSafely(safeTransferFromWithoutData, null);
+        });
+
+        describe('to a non-receiver contract', function () {
+          it('reverts', async function () {
+            await expect(
+              this.token['safeTransferFrom(address,address,uint256)'](owner.address, this.token.address, tokenId)
+            ).to.revertedWith('ERC721: transfer to non ERC721Receiver implementer');
+          });
         });
 
         describe('to a receiver contract returning unexpected value', function () {
