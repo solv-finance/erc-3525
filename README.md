@@ -44,6 +44,16 @@ To keep your system secure, you should always use the installed code as-is, and 
 
 [ERC-3525 White Paper](https://whitepaper.sftlabs.io/SFT%20Whitepaper.pdf)
 
+## Security
+
+This project is maintained by [Solv Protocol](https://solv.finance) with the goal of providing a ERC-3525 Reference Implementation for the SFT ecosystem. We address security through risk management in various areas such as engineering and open source best practices, scoping and API design, multi-layered review processes, and incident response preparedness.
+
+Past audits can be found in [audits/](https://github.com/solv-finance/erc-3525/blob/master/audits).
+
+Smart contracts are a nascent technology and carry a high level of technical risk and uncertainty. Although the ERC-3525 Reference Implementation has been audited, using it is not a substitute for a security audit.
+
+ERC-3525 Reference Implementation Contracts is made available under the MIT License, which disclaims all warranties in relation to the project and which limits the liability of those that contribute and maintain the project, including Solv Protocol. As set out further in the Terms, you acknowledge that you are solely responsible for any use of ERC-3525 Reference Implementation Contracts and you assume all risks associated with any such use.
+
 ## Contribute
 
 **Requirements**
