@@ -48,7 +48,7 @@ To keep your system secure, you should always use the installed code as-is, and 
 
 This project is maintained by [Solv Protocol](https://solv.finance) with the goal of providing a ERC-3525 Reference Implementation for the SFT ecosystem. We address security through risk management in various areas such as engineering and open source best practices, scoping and API design, multi-layered review processes, and incident response preparedness.
 
-Past audits can be found in [audits/](https://github.com/solv-finance/erc-3525/blob/master/audits).
+Past audits can be found in [audits/](https://github.com/solv-finance/erc-3525/tree/main/audits).
 
 Smart contracts are a nascent technology and carry a high level of technical risk and uncertainty. Although the ERC-3525 Reference Implementation has been audited, using it is not a substitute for a security audit.
 
