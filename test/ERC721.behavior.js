@@ -37,6 +37,7 @@ function shouldBehaveLikeERC721 (errorPrefix) {
       await this.token.mint(owner.address, secondTokenId, mintSlot, mintValue);
       this.toWhom = other;
       this.ERC721ReceiverMockFactory = await ethers.getContractFactory('ERC721ReceiverMock');
+      this.NonReceiverMock = await ethers.getContractFactory('NonReceiverMock');
     });
 
     describe('balanceOf(address)', function () {
@@ -253,10 +254,19 @@ function shouldBehaveLikeERC721 (errorPrefix) {
           shouldTransferSafely(safeTransferFromWithoutData, null);
         });
 
-        describe('to a non-receiver contract', function () {
+        describe('to a non-receiver contract that implements ERC-165', function () {
           it('reverts', async function () {
             await expect(
               this.token['safeTransferFrom(address,address,uint256)'](owner.address, this.token.address, tokenId)
+            ).to.revertedWith('ERC721: transfer to non ERC721Receiver implementer');
+          });
+        });
+
+        describe('to a non-receiver contract that does not implement ERC-165', function () {
+          it('reverts', async function () {
+            const nonReceiver = await this.NonReceiverMock.deploy();
+            await expect(
+              this.token['safeTransferFrom(address,address,uint256)'](owner.address, nonReceiver.address, tokenId)
             ).to.revertedWith('ERC721: transfer to non ERC721Receiver implementer');
           });
         });
@@ -843,3 +853,4 @@ module.exports = {
   shouldBehaveLikeERC721Enumerable,
   shouldBehaveLikeERC721Metadata,
 };
+

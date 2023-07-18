@@ -46,6 +46,7 @@ function shouldBehaveLikeERC3525 (errorPrefix) {
       await this.token.mint(secondOwner.address, fourthTokenId, secondSlot, fourthTokenValue);
       this.toWhom = other;
       this.ERC3525ReceiverMockFactory = await ethers.getContractFactory('ERC3525ReceiverMock');
+      this.NonReceiverMock = await ethers.getContractFactory('NonReceiverMock');
     });
 
     describe('balanceOf(uint256)', function () {
@@ -277,9 +278,20 @@ function shouldBehaveLikeERC3525 (errorPrefix) {
         this.toOwnerBalance = await this.token['balanceOf(address)'](this.toOwner.address);      
       }
 
-      describe('to a non-receiver contract', function () {
+      describe('to a non-receiver contract that implements ERC-165', function () {
         beforeEach(async function () {
           this.toOwner = this.token;
+          this.toTokenId = 1003;
+          this.toTokenValue = 100000;
+          await this.token.mint(this.toOwner.address, this.toTokenId, firstSlot, this.toTokenValue);
+          this.toOwnerBalance = await this.token['balanceOf(address)'](this.toOwner.address);   
+        });
+        shouldTransferValueFromTokenToTokenByUsers();
+      });
+
+      describe('to a non-receiver contract that does not implements ERC-165', function () {
+        beforeEach(async function () {
+          this.toOwner = await this.NonReceiverMock.deploy();
           this.toTokenId = 1003;
           this.toTokenValue = 100000;
           await this.token.mint(this.toOwner.address, this.toTokenId, firstSlot, this.toTokenValue);
@@ -502,9 +514,17 @@ function shouldBehaveLikeERC3525 (errorPrefix) {
         shouldTransferValueFromTokenToAddressByUsers();
       });
 
-      describe('to a non-receiver contract', function () {
+      describe('to a non-receiver contract that implements ERC-165', function () {
         beforeEach(async function () {
           this.toOwner = this.token;
+          this.toOwnerBalance = await this.token['balanceOf(address)'](this.toOwner.address);
+        });
+        shouldTransferValueFromTokenToAddressByUsers();
+      });
+
+      describe('to a non-receiver contract that does not implement ERC-165', function () {
+        beforeEach(async function () {
+          this.toOwner = await this.NonReceiverMock.deploy();
           this.toOwnerBalance = await this.token['balanceOf(address)'](this.toOwner.address);
         });
         shouldTransferValueFromTokenToAddressByUsers();

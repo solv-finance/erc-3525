@@ -547,11 +547,19 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         uint256 toTokenId_, 
         uint256 value_, 
         bytes memory data_
-    ) private returns (bool) {
+    ) internal virtual returns (bool) {
         address to = ERC3525.ownerOf(toTokenId_);
-        if (to.isContract() && IERC165(to).supportsInterface(type(IERC3525Receiver).interfaceId)) {
-            bytes4 retval = IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_);
-            return retval == IERC3525Receiver.onERC3525Received.selector;
+        if (to.isContract()) {
+            try IERC165(to).supportsInterface(type(IERC3525Receiver).interfaceId) returns (bool retval) {
+                if (retval) {
+                    bytes4 receivedVal = IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_);
+                    return receivedVal == IERC3525Receiver.onERC3525Received.selector;
+                } else {
+                    return true;
+                }
+            } catch (bytes memory /** reason */) {
+                return true;
+            }
         } else {
             return true;
         }
@@ -627,3 +635,4 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         return _createOriginalTokenId();
     }
 }
+
