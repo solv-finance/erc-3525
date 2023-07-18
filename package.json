@@ -1,6 +1,6 @@
 {
   "name": "@solvprotocol/erc-3525",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "ERC-3525 Reference Implementation for Solidity",
   "license": "MIT",
   "repository": {

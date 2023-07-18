@@ -70,6 +70,13 @@ contract ERC3525BaseMockUpgradeableWithInit is ERC3525BaseMockUpgradeable {
         __ERC3525BaseMock_init(name_, symbol_, decimals_);
     }
 }
+import "./NonReceiverMockUpgradeable.sol";
+
+contract NonReceiverMockUpgradeableWithInit is NonReceiverMockUpgradeable {
+    constructor() payable initializer {
+        __NonReceiverMock_init();
+    }
+}
 import "../periphery/ERC3525MetadataDescriptorUpgradeable.sol";
 
 contract ERC3525MetadataDescriptorUpgradeableWithInit is ERC3525MetadataDescriptorUpgradeable {

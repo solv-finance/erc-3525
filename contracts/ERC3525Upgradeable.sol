@@ -552,11 +552,19 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
         uint256 toTokenId_, 
         uint256 value_, 
         bytes memory data_
-    ) private returns (bool) {
+    ) internal virtual returns (bool) {
         address to = ERC3525Upgradeable.ownerOf(toTokenId_);
-        if (to.isContract() && IERC165Upgradeable(to).supportsInterface(type(IERC3525ReceiverUpgradeable).interfaceId)) {
-            bytes4 retval = IERC3525ReceiverUpgradeable(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_);
-            return retval == IERC3525ReceiverUpgradeable.onERC3525Received.selector;
+        if (to.isContract()) {
+            try IERC165Upgradeable(to).supportsInterface(type(IERC3525ReceiverUpgradeable).interfaceId) returns (bool retval) {
+                if (retval) {
+                    bytes4 receivedVal = IERC3525ReceiverUpgradeable(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_);
+                    return receivedVal == IERC3525ReceiverUpgradeable.onERC3525Received.selector;
+                } else {
+                    return true;
+                }
+            } catch (bytes memory /** reason */) {
+                return true;
+            }
         } else {
             return true;
         }
@@ -639,3 +647,4 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
      */
     uint256[41] private __gap;
 }
+
