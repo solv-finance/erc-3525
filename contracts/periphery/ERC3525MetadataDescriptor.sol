@@ -2,8 +2,8 @@
 
 pragma solidity ^0.8.1;
 
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/Base64.sol";
+import "@openzeppelin/contracts@4.9.3/utils/Strings.sol";
+import "@openzeppelin/contracts@4.9.3/utils/Base64.sol";
 import "./interface/IERC3525MetadataDescriptor.sol";
 import "../extensions/IERC3525Metadata.sol";
 

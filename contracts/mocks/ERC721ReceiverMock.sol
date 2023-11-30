@@ -2,8 +2,8 @@
 
 pragma solidity ^0.8.1;
 
-import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts@4.9.3/utils/introspection/IERC165.sol";
+import "@openzeppelin/contracts@4.9.3/token/ERC721/IERC721Receiver.sol";
 
 contract ERC721ReceiverMock is IERC165, IERC721Receiver {
     enum Error {

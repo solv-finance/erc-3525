@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.1;
 
-import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts@4.9.3/utils/Context.sol";
 import "./ERC3525Mintable.sol";
 
 contract ERC3525Burnable is Context, ERC3525Mintable {

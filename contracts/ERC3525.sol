@@ -2,11 +2,11 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/Context.sol";
-import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts@4.9.3/utils/Context.sol";
+import "@openzeppelin/contracts@4.9.3/utils/introspection/IERC165.sol";
+import "@openzeppelin/contracts@4.9.3/utils/Strings.sol";
+import "@openzeppelin/contracts@4.9.3/utils/Address.sol";
+import "@openzeppelin/contracts@4.9.3/utils/Counters.sol";
 import "./IERC721.sol";
 import "./IERC3525.sol";
 import "./IERC721Receiver.sol";
