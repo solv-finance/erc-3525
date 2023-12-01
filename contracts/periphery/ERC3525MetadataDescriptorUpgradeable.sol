@@ -2,8 +2,8 @@
 
 pragma solidity ^0.8.1;
 
-import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
 import "./interface/IERC3525MetadataDescriptorUpgradeable.sol";
 import "../extensions/IERC3525MetadataUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
@@ -15,7 +15,7 @@ contract ERC3525MetadataDescriptorUpgradeable is Initializable, IERC3525Metadata
     function __ERC3525MetadataDescriptor_init_unchained() internal onlyInitializing {
     }
 
-    using StringsUpgradeable for uint256;
+    using Strings for uint256;
 
     function constructContractURI() external view override returns (string memory) {
         IERC3525MetadataUpgradeable erc3525 = IERC3525MetadataUpgradeable(msg.sender);
@@ -24,7 +24,7 @@ contract ERC3525MetadataDescriptorUpgradeable is Initializable, IERC3525Metadata
                 abi.encodePacked(
                     /* solhint-disable */
                     'data:application/json;base64,',
-                    Base64Upgradeable.encode(
+                    Base64.encode(
                         abi.encodePacked(
                             '{"name":"', 
                             erc3525.name(),
@@ -48,7 +48,7 @@ contract ERC3525MetadataDescriptorUpgradeable is Initializable, IERC3525Metadata
                 abi.encodePacked(
                     /* solhint-disable */
                     'data:application/json;base64,',
-                    Base64Upgradeable.encode(
+                    Base64.encode(
                         abi.encodePacked(
                             '{"name":"', 
                             _slotName(slot_),
@@ -72,7 +72,7 @@ contract ERC3525MetadataDescriptorUpgradeable is Initializable, IERC3525Metadata
             string(
                 abi.encodePacked(
                     "data:application/json;base64,",
-                    Base64Upgradeable.encode(
+                    Base64.encode(
                         abi.encodePacked(
                             /* solhint-disable */
                             '{"name":"',

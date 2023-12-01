@@ -36,7 +36,7 @@ contract ERC3525SlotEnumerableUpgradeable is Initializable, ContextUpgradeable, 
     // slot => index
     mapping(uint256 => uint256) private _allSlotsIndex;
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165Upgradeable, ERC3525Upgradeable) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525Upgradeable) returns (bool) {
         return
             interfaceId == type(IERC3525SlotEnumerableUpgradeable).interfaceId ||
             super.supportsInterface(interfaceId);

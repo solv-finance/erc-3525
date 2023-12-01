@@ -20,7 +20,7 @@ contract ERC3525SlotApprovableUpgradeable is Initializable, ContextUpgradeable, 
     function __ERC3525SlotApprovable_init_unchained(string memory, string memory, uint8) internal onlyInitializing {
     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165Upgradeable, ERC3525SlotEnumerableUpgradeable) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525SlotEnumerableUpgradeable) returns (bool) {
         return
             interfaceId == type(IERC3525SlotApprovableUpgradeable).interfaceId ||
             super.supportsInterface(interfaceId);
