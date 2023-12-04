@@ -5,8 +5,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "./IERC721.sol";
 import "./IERC3525.sol";
 import "./IERC721Receiver.sol";
@@ -19,8 +17,6 @@ import "./periphery/interface/IERC3525MetadataDescriptor.sol";
 contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     using Strings for address;
     using Strings for uint256;
-    using Address for address;
-    using Counters for Counters.Counter;
 
     event SetMetadataDescriptor(address indexed metadataDescriptor);
 
@@ -42,7 +38,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     string private _name;
     string private _symbol;
     uint8 private _decimals;
-    Counters.Counter private _tokenIdGenerator;
+    uint256 private _tokenIdGenerator;
 
     // id => (approval => allowance)
     // @dev _approvedValues cannot be defined within TokenData, cause struct containing mappings cannot be constructed.
@@ -58,7 +54,8 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     IERC3525MetadataDescriptor public metadataDescriptor;
 
     constructor(string memory name_, string memory symbol_, uint8 decimals_) {
-         _name = name_;
+        _tokenIdGenerator = 1;
+        _name = name_;
         _symbol = symbol_;
         _decimals = decimals_;
     }
@@ -549,7 +546,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         bytes memory data_
     ) internal virtual returns (bool) {
         address to = ERC3525.ownerOf(toTokenId_);
-        if (to.isContract()) {
+        if (_isContract(to)) {
             try IERC165(to).supportsInterface(type(IERC3525Receiver).interfaceId) returns (bool retval) {
                 if (retval) {
                     bytes4 receivedVal = IERC3525Receiver(to).onERC3525Received(_msgSender(), fromTokenId_, toTokenId_, value_, data_);
@@ -581,7 +578,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
         uint256 tokenId_,
         bytes memory data_
     ) private returns (bool) {
-        if (to_.isContract()) {
+        if (_isContract(to_)) {
             try 
                 IERC721Receiver(to_).onERC721Received(_msgSender(), from_, tokenId_, data_) returns (bytes4 retval) {
                 return retval == IERC721Receiver.onERC721Received.selector;
@@ -626,13 +623,20 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     }
 
     function _createOriginalTokenId() internal virtual returns (uint256) {
-         _tokenIdGenerator.increment();
-        return _tokenIdGenerator.current();
+        return _tokenIdGenerator++;
     }
 
     function _createDerivedTokenId(uint256 fromTokenId_) internal virtual returns (uint256) {
         fromTokenId_;
         return _createOriginalTokenId();
+    }
+
+    function _isContract(address addr_) private view returns (bool) {
+        uint32 size;
+        assembly {
+            size := extcodesize(addr_)
+        }
+        return (size > 0);
     }
 }
 

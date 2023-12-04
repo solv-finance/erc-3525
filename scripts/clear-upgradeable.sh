@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+npx hardhat clean
+
 cd contracts
 rm -f *Upgradeable.sol
 find . -name *Upgradeable.sol | xargs rm -f 

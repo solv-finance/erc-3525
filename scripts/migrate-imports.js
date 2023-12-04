@@ -5,13 +5,14 @@ const path = require('path');
 
 const pathUpdates = [
   'utils/ContextUpgradeable.sol',
-  'utils/introspection/ERC165Upgradeable.sol',
-  'utils/StringsUpgradeable.sol',
-  'utils/AddressUpgradeable.sol',
-  'utils/CountersUpgradeable.sol',
-  'utils/introspection/IERC165Upgradeable.sol',
   'token/ERC721/IERC721ReceiverUpgradeable.sol',
-  'utils/Base64Upgradeable.sol'
+]
+
+const nonUpgradeableUpdates = [
+  'StringsUpgradeable',
+  'AddressUpgradeable',
+  'IERC165Upgradeable',
+  'Base64Upgradeable'
 ]
 
 async function main (paths = [ 'contracts' ]) {
@@ -19,7 +20,7 @@ async function main (paths = [ 'contracts' ]) {
 
   const updatedFiles = [];
   for (const file of files) {
-      console.log(`Update ${file}`);
+    console.log(`Update ${file}`);
     if (await updateFile(file, updateImportPaths)) {
       updatedFiles.push(file);
     }
@@ -79,6 +80,13 @@ function updateImportPaths (source) {
     source = source.replace(
       './Initializable.sol',
       '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol');
+  }
+
+  for (const fileName of nonUpgradeableUpdates) {
+    source = source.replaceAll(
+      fileName,
+      fileName.split('Upgradeable')[0]
+    );
   }
   return source;
 }

@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol";
+import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "./IERC721Upgradeable.sol";
 
 /**
@@ -10,7 +10,7 @@ import "./IERC721Upgradeable.sol";
  * @dev See https://eips.ethereum.org/EIPS/eip-3525
  * Note: the ERC-165 identifier for this interface is 0xd5358140.
  */
-interface IERC3525Upgradeable is IERC165Upgradeable, IERC721Upgradeable {
+interface IERC3525Upgradeable is IERC165, IERC721Upgradeable {
     /**
      * @dev MUST emit when value of a token is transferred to another token with the same slot,
      *  including zero value transfers (_value == 0) as well as transfers when tokens are created

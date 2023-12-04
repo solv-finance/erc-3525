@@ -5,7 +5,7 @@ pragma solidity ^0.8.1;
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "./ERC3525SlotEnumerableUpgradeable.sol";
 import "./extensions/IERC3525SlotApprovableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract ERC3525SlotApprovableUpgradeable is Initializable, ContextUpgradeable, ERC3525SlotEnumerableUpgradeable, IERC3525SlotApprovableUpgradeable {
 
@@ -20,7 +20,7 @@ contract ERC3525SlotApprovableUpgradeable is Initializable, ContextUpgradeable, 
     function __ERC3525SlotApprovable_init_unchained(string memory, string memory, uint8) internal onlyInitializing {
     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165Upgradeable, ERC3525SlotEnumerableUpgradeable) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC3525SlotEnumerableUpgradeable) returns (bool) {
         return
             interfaceId == type(IERC3525SlotApprovableUpgradeable).interfaceId ||
             super.supportsInterface(interfaceId);
