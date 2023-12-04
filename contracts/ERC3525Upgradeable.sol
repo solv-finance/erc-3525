@@ -13,7 +13,7 @@ import "./extensions/IERC721EnumerableUpgradeable.sol";
 import "./extensions/IERC721MetadataUpgradeable.sol";
 import "./extensions/IERC3525MetadataUpgradeable.sol";
 import "./periphery/interface/IERC3525MetadataDescriptorUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525MetadataUpgradeable, IERC721EnumerableUpgradeable {
     using Strings for address;
@@ -39,7 +39,7 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
     string private _name;
     string private _symbol;
     uint8 private _decimals;
-    uint256 private _tokenIdGenerator = 1;
+    uint256 private _tokenIdGenerator;
 
     // id => (approval => allowance)
     // @dev _approvedValues cannot be defined within TokenData, cause struct containing mappings cannot be constructed.
@@ -59,7 +59,8 @@ contract ERC3525Upgradeable is Initializable, ContextUpgradeable, IERC3525Metada
     }
 
     function __ERC3525_init_unchained(string memory name_, string memory symbol_, uint8 decimals_) internal onlyInitializing {
-         _name = name_;
+        _tokenIdGenerator = 1;
+        _name = name_;
         _symbol = symbol_;
         _decimals = decimals_;
     }

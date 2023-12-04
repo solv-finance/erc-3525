@@ -4,7 +4,7 @@ pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "../ERC3525Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract ERC3525BaseMockUpgradeable is Initializable, ContextUpgradeable, ERC3525Upgradeable {
     function __ERC3525BaseMock_init(string memory name_, string memory symbol_, uint8 decimals_) internal onlyInitializing {

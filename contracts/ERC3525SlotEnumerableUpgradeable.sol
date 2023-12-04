@@ -5,7 +5,7 @@ pragma solidity ^0.8.1;
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "./ERC3525Upgradeable.sol";
 import "./extensions/IERC3525SlotEnumerableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract ERC3525SlotEnumerableUpgradeable is Initializable, ContextUpgradeable, ERC3525Upgradeable, IERC3525SlotEnumerableUpgradeable {
     function __ERC3525SlotEnumerable_init(

@@ -5,7 +5,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
 import "./IERC721.sol";
 import "./IERC3525.sol";
 import "./IERC721Receiver.sol";
@@ -18,7 +17,6 @@ import "./periphery/interface/IERC3525MetadataDescriptor.sol";
 contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     using Strings for address;
     using Strings for uint256;
-    using Address for address;
 
     event SetMetadataDescriptor(address indexed metadataDescriptor);
 
@@ -40,7 +38,7 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     string private _name;
     string private _symbol;
     uint8 private _decimals;
-    uint256 private _tokenIdGenerator = 1;
+    uint256 private _tokenIdGenerator;
 
     // id => (approval => allowance)
     // @dev _approvedValues cannot be defined within TokenData, cause struct containing mappings cannot be constructed.
@@ -56,7 +54,8 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     IERC3525MetadataDescriptor public metadataDescriptor;
 
     constructor(string memory name_, string memory symbol_, uint8 decimals_) {
-         _name = name_;
+        _tokenIdGenerator = 1;
+        _name = name_;
         _symbol = symbol_;
         _decimals = decimals_;
     }

@@ -6,17 +6,17 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "./interface/IERC3525MetadataDescriptorUpgradeable.sol";
 import "../extensions/IERC3525MetadataUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract ERC3525MetadataDescriptorUpgradeable is Initializable, IERC3525MetadataDescriptorUpgradeable {
+
+    using Strings for uint256;
+
     function __ERC3525MetadataDescriptor_init() internal onlyInitializing {
     }
 
     function __ERC3525MetadataDescriptor_init_unchained() internal onlyInitializing {
     }
-
-    using Strings for uint256;
-
     function constructContractURI() external view override returns (string memory) {
         IERC3525MetadataUpgradeable erc3525 = IERC3525MetadataUpgradeable(msg.sender);
         return 
